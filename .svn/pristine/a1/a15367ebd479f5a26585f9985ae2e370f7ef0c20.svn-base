@@ -1,0 +1,305 @@
+import { Component, ViewEncapsulation, AfterViewInit,ViewContainerRef  } from '@angular/core';
+import { Select2OptionData } from 'ng2-select2';
+
+import { Router, ActivatedRoute} from '@angular/router';
+
+import {StructureService} from '../../service/structure.service';
+import {UtilService} from '../../service/util.service';
+import {CatalogService} from '../../service/catalog.service';
+
+import {Eventos} from '../../model/Eventos';
+import {MediumModel} from '../../model/MediumModel';
+import {SpaceModel} from '../../model/SpaceModel';
+import {MediumTableModel} from '../../model/MediumTableModel';
+
+import {Base} from '../base/base.component';
+import {IBase} from '../base/ibase';
+
+import {MediosRequestDTO} from '../../model/dto/MediosRequestDTO';
+import {EspaciosRequestDTO} from '../../model/dto/EspaciosRequestDTO';
+
+import {MediosTableDTO} from '../../model/helper/MediosTableDTO';
+import {EspaciosTableDTO} from '../../model/helper/EspaciosTableDTO';
+
+import { Overlay } from 'angular2-modal';
+import { Modal } from 'angular2-modal/plugins/bootstrap';
+
+import {FileUploader} from "ng2-file-upload";
+
+declare var jQuery: any;
+declare let XLSX: any;
+
+@Component({
+  selector: '[forms-wizard]',
+  templateUrl: './ofertas.template.html',
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: ['./ofertas.style.scss']
+})
+
+export class Ofertas extends Base {
+
+   /*requeridos por select*/
+  selected: any;
+  select2Options: any = {
+    theme: 'bootstrap',
+  };
+  select2OptionsDisabled: any = {
+    theme: 'bootstrap',
+    disabled : true
+  };
+
+  /*----------------------------------------------------------------------------------------------------*/
+  structureDataId : number = 0;
+  versionNum : number = 0;
+  eventoData : Eventos = new Eventos();
+
+  //informacion de la configuracion de la vista
+  viewTitle : string = "";
+  viewContent : any = {};
+
+  viewActions : any[] = [];
+  actionsMap : any = {};
+
+  applyExcelExport : number = 0;
+  excelValidations : any[] = [];
+  excelValidationsMap : any = {};
+
+  //campos de grids dinamicos
+  grids : any[] = [];
+  gridsMap : any = {};
+
+  testspan = 18;
+
+  //variable de carga de archivos
+  private uploader: FileUploader = new FileUploader({url: 'http://localhost:3000/'});
+  private options = {readAs: 'BinaryString'};
+  private hasBaseDropZoneOver: boolean = false;
+  
+  private fileIsOver : boolean;
+  private fileLoaderMsg : string = 'Arrastre y suelte archivos desde el escritorio directamente a este diálogo para subirlos aquí.';
+  private fileOk : boolean;
+
+  //x
+  private comboOptions : Select2OptionData[] = [];
+  private comboMap : any = {};
+
+  /*----------------------------------------------------------------------------------------------------*/
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private structureService : StructureService,
+    overlay: Overlay, vcRef: ViewContainerRef, public modal: Modal) {
+    super(structureService, router);
+    overlay.defaultViewContainer = vcRef;
+  }
+
+  ngOnInit(): void {
+    //carga de parametros de entrada
+    this.structureDataId = this.route.snapshot.params['dataId'] || 0;
+    this.versionNum = this.route.snapshot.params['versionNum'] || 0;
+    this.loadEvento(this.structureDataId);
+    this.getView();
+    this.buildBase(this.structureDataId, this.versionNum, this.eventoData);
+  }
+
+  //funcion para cargar la configuracion de la pantalla
+  getView() {
+    this.structureService.getViewByAppId(1, this.versionNum).then(
+      data => {
+        this.viewContent = data;
+        this.viewActions = data.viewAction || [];
+        
+        //armado de mapa de acciones
+        let actionsResult = this.viewActions.reduce(function (map, obj) {
+          map[obj.htmlId] = obj;
+          return map;
+        }, {});
+        this.actionsMap = actionsResult;
+
+        //asignacion de titulo
+        this.viewTitle = this.viewContent.viewTitle;
+        
+        //si aplica export de excel
+        if(this.viewContent.applyExcelImport != null && this.viewContent.applyExcelImport){
+          this.excelValidations = data.viewExcelValidations;
+          //armado de mapa de validaciones
+          let validations = this.excelValidations.reduce(function (map, obj) {
+            map[obj.cell] = obj;
+            return map;
+          }, {});
+          this.excelValidationsMap = validations;
+        }
+
+        //si pantalla tiene grids dinamicos
+        if(this.viewContent.viewGrids != null && this.viewContent.viewGrids && this.viewContent.viewGrids.length > 0){
+          this.grids = this.viewContent.viewGrids;
+          //armado de mapa de validaciones
+          let gmap = this.grids.reduce(function (map, obj) {
+            map[obj.htmlId] = obj;
+            return map;
+          }, {});
+          this.gridsMap = gmap;
+        }
+
+      }
+    );
+  }
+
+  existsDynamicTable(gridId: string):number{
+    let res= 0;
+    if(this.gridsMap.hasOwnProperty(gridId)){
+      res = 1;
+    }else{
+      res = 0;
+    }
+    return res;
+  }
+
+  getTotalColumns(gridId:string):number{
+    console.log("TEST--------");
+    let totales=  this.gridsMap[gridId].viewGrids.length;
+    console.log(totales);
+    return totales;
+  }
+
+  alsuperFinish(){
+    alert("terminando de metodo custom alsuper");
+  }
+
+  loadEvento(structureDataId : number){
+    this.structureService.getEventoByStructureDataId(structureDataId).then(
+      data => {
+        this.eventoData = data;
+      });
+  }
+
+  //funcion para regresar a bandeja
+  cancel(){
+     this.router.navigateByUrl('app');
+  }
+
+  //funcion para finalizar captura
+  finalizarCaptura(){
+    let requestData : any = {};
+    requestData.dataId = this.structureDataId;
+    requestData.versionNum = this.versionNum;
+    requestData.valueCode = "SIGUIENTE";
+    requestData.eventosId = this.eventoData.eventosId;
+
+    this.structureService.saveOffer(requestData).then(
+      response => {
+        if(response.status == 200 ){
+          this.router.navigateByUrl('app');
+        }
+      },
+      error =>{
+          this.modal.alert().title('Error al finalizar captura').body(error._body).open();
+      }
+    );
+  }
+
+  //funcion para regresar de etapa
+  regresarEtapa(){
+    let requestData : any = {};
+    requestData.dataId = this.structureDataId;
+    requestData.versionNum = this.versionNum;
+    requestData.valueCode = "REGRESAR";
+    requestData.eventosId = this.eventoData.eventosId;
+
+    this.structureService.saveOffer(requestData).then(
+      response => {
+        if(response.status == 200 ){
+          this.router.navigateByUrl('app');
+        }
+      },
+      error =>{
+          this.modal.alert().title('Error al finalizar captura').body(error._body).open();
+      }
+    );
+  }
+
+  ngAfterViewInit() {
+  }
+
+  onFileDrop(file: File): void {
+    var hasRowsError: boolean = false;
+    var alertMjs: string = '';
+    try {
+        //se obtiene el libro
+        var workbook = XLSX.read(file, {type: 'binary', encoding: 'utf8'});
+        //se obtienen las pestañas
+        var sheets: string[] = workbook.SheetNames;
+        //se obtiene el nombre de la primer pestaña
+        let sheet = sheets[0];
+
+        let isFileOk : boolean = true;
+        //por cada validacion, configurada, se saca el archivo y se cotejan los datos:
+        for(let validation of this.excelValidations){
+          let options : string [] = validation.posibleValues.split(",");
+          let cellValue : string = (workbook.Sheets[sheet][validation.cell]).v;
+          if(options.indexOf(cellValue) == -1){
+            isFileOk = false;
+            break;
+          }
+        }
+
+        this.fileOk = isFileOk;
+        if(!isFileOk){
+          this.modal.alert().title('Error al importar desde Excel').body('El archivo cargado no cuenta con el formato configurado en la herramienta. Verifique.').open();
+        }else{
+          this.modal.alert().title('Archivo Correcto').body('El archivo cargado cuenta con el formato correcto. Procesando...').open();
+        }
+
+
+        /*
+        //se obtiene la celda de la primer pestaña
+        let cellCheckformat = workbook.Sheets[sheet]['B2'];
+        alert(cellCheckformat.v);
+        */
+        
+      }catch (e){
+          console.log(e);
+      }
+  }
+
+  public fileOver(fileIsOver: boolean): void {
+    this.fileIsOver = fileIsOver;
+    if(this.fileIsOver){
+      this.fileLoaderMsg = 'Suelte el archivo';
+    }else{
+      this.fileLoaderMsg = 'Arrastre y suelte archivos desde el escritorio directamente a este diálogo para subirlos aquí.';
+    }
+  }
+
+  searchCombos(event:any){
+    console.log("buscando combos");
+  }
+
+  searchOfertas(event:any){
+    console.log("buscando ofertas");
+  }
+
+  getGridDef(gridId:string, contentAttribute:string){
+    let obj = this.gridsMap[gridId];
+    let arrayOfContent = [];
+    if(obj && obj.hasOwnProperty(contentAttribute)){
+      arrayOfContent =  obj[contentAttribute];
+    }
+    let f: any[] = [];
+    if(arrayOfContent.length > 0){
+      f = arrayOfContent.sort((a, b) => {
+          if(parseInt(a.position) > parseInt(b.position)){return 1}
+          if(parseInt(a.position) < parseInt(b.position)){return -1}
+          else{return 0}
+        }
+      );
+    }
+    console.log(f);
+    return f;
+  }
+
+  /* onChange paginas*/
+  comboChangeEvent(e: any): void {
+  }
+  
+}

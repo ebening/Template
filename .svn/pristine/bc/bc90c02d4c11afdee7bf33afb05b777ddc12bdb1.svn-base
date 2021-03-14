@@ -1,0 +1,105 @@
+<div class="container">
+  <modal title="Cambiar Contraseña" #modalChPwd>
+    <modal-content>
+      <section class="widget" widget>
+        <div class="widget-body">
+          <div id="msjChPwd" *ngIf="msjChPwd" [@msjShow]="hasMsj" (click)="closeMsjChPwd()"
+               [class.alert-danger]="classMsjDanger" [class.alert-info]="classMsjInfo" class="alert ">
+            <div class="col-md-11" align="center">
+              <strong id="msjChPwdText">{{mensajeAlert}}</strong>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <form id="formChgPwd" class="form-horizontal form-label-left" role="form">
+                <fieldset>
+                  <legend>Es necesario cambiar su contraseña</legend>
+                </fieldset>
+                <div class="form-group row">
+                  <label class="col-md-4 col-form-label text-md-right" for="nuevoPwd">Nueva</label>
+                  <div class="col-md-8">
+                    <input id="nuevoPwd" type="password" class="form-control" [(ngModel)]="model.pwd"
+                           [ngModelOptions]="{standalone: true}" (keyup)="onCheckLenght()"
+                           data-toggle="popover" data-content="Minimo 6 digitos">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-4 col-form-label text-md-right" for="confirmar">Confirmar</label>
+                  <div class="col-md-8">
+                    <input id="confirmar" type="password" class="form-control" [(ngModel)]="confirmPwd"
+                           [ngModelOptions]="{standalone: true}"
+                           data-toggle="popover" data-content="Contraseñas deben ser iguales" (keyup)="onCheckEqual()">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </modal-content>
+    <modal-footer>
+      <div class="row">
+        <div id="btnModal">
+          <button type="button" class="btn small-button btn-success" (click)="changePwd()">
+            <span class="fa fa-save fa-lg"></span>
+            Grabar
+          </button>
+          <button type="button" class="btn small-button btn-danger" (click)="cancelChgPwd()">
+            <span class="fa fa-remove fa-lg"></span>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </modal-footer>
+  </modal>
+
+  <main id="content" class="widget-login-container" role="main">
+    <div class="row">
+      <div class="col-xl-4 col-md-6 col-xs-10 offset-xl-4 offset-md-3 offset-xs-1">
+        <div id="msjSystem" *ngIf="hasMsj" [@msjShow]="hasMsj" (click)="closeMsj()"
+             [class.alert-danger]="classMsjDanger" [class.alert-info]="classMsjInfo" class="alert ">
+          <div class="col-md-11" align="center">
+            <strong id="msjSystemText">{{mensajeAlert}}</strong>
+          </div>
+          <!--  <div class="col-md-1 text-right">
+              <span class="fa fa-remove fa-lg"></span>
+            </div> -->
+        </div>
+      </div>
+      <div class="col-xl-4 col-md-6 col-xs-10 offset-xl-4 offset-md-3 offset-xs-1">
+        <h5 class="widget-login-logo animated fadeInUp">
+          <i class="fa fa-circle text-gray"></i>
+          AdMaster 2.0
+          <i class="fa fa-circle text-warning"></i>
+        </h5>
+        <section class="widget widget-login animated fadeInUp">
+          <header>
+            <h3>Iniciar Sesion</h3>
+          </header>
+          <div class="widget-body">
+            <form class="login-form mt-lg">
+              <div class="form-group">
+                <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="model.username" data-toggle="popover"
+                       data-content="Campo Requerido" (keyup)="onKeyUpUsername()"
+                       class="form-control" id="txtUsername" placeholder="Usuario">
+              </div>
+              <div class="form-group">
+                <input class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="model.pwd" id="pswd"
+                       type="password" placeholder="Contraseña">
+              </div>
+              <div class="clearfix">
+                <div class="btn-toolbar float-xs-right m-t-1">
+                  <a style="color: lightskyblue; margin-right: 35px" (click)="resetPwd()" class="mr-n-lg">Recuperar Contraseña</a>
+                  <a style="color: whitesmoke" class="btn btn-success" (click)="login()"><span class="fa fa-sign-in fa-lg"></span>&nbsp;Ingresar</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="page-footer">
+    2017 AdMaster 2.0
+  </footer>
+</div>

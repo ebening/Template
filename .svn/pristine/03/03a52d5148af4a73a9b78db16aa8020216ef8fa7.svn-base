@@ -1,0 +1,4 @@
+
+.selectedRow {
+  background-color: #ecedec;
+}

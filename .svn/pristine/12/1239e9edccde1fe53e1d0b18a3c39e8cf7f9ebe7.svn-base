@@ -1,0 +1,41 @@
+/**
+ * Created by jdominguez on 2/4/17.
+ */
+
+
+import {Injectable} from "@angular/core";
+import {UtilService} from "../util.service";
+import {Http, Response, Headers} from "@angular/http";
+import {Observable} from "rxjs";
+
+@Injectable()
+export class UdpMediosEspaciosService {
+
+  private spControllerURL: string = "rest/udpMediosEspacios/";
+
+  constructor(private http: Http, private util: UtilService){
+
+  }
+
+  copyMecanicasVal (model){
+    let fullUrl: string = this.util.url + this.spControllerURL + "copyMecanicasVal";
+    let headers = new Headers({'Content-Type': 'application/json','Authorization':'Bearer ' + localStorage.getItem("token")});
+    return this.http.post(fullUrl, JSON.stringify(model), {headers: headers});
+  }
+
+  selectMediosEspacios (eventosId: number): Observable<Response>{
+    let fullUrl: string = this.util.url + this.spControllerURL + "selectMediosEspacios";
+    let headers = new Headers({'Content-Type': 'application/json','Authorization':'Bearer ' + localStorage.getItem("token")});
+    return this.http.post(fullUrl, JSON.stringify(eventosId), {headers: headers});
+  }
+
+  selectEspaciosCategorias(eventosId: number, mediosId: number): Observable<Response>{
+    let model = {
+      eventosId: eventosId,
+      mediosId: mediosId
+    };
+    let fullUrl: string = this.util.url + this.spControllerURL + "selectEspaciosCategorias";
+    let headers = new Headers({'Content-Type': 'application/json','Authorization':'Bearer ' + localStorage.getItem("token")});
+    return this.http.post(fullUrl, JSON.stringify(model), {headers: headers});
+  }
+}

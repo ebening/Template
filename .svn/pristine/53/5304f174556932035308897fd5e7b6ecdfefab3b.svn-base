@@ -1,0 +1,146 @@
+import { Component, ViewEncapsulation, AfterViewInit,ViewContainerRef  } from '@angular/core';
+import { Select2OptionData } from 'ng2-select2';
+
+import { Router, ActivatedRoute} from '@angular/router';
+
+import {StructureService} from '../../service/structure.service';
+import {UtilService} from '../../service/util.service';
+import {CatalogService} from '../../service/catalog.service';
+
+import {Eventos} from '../../model/Eventos';
+import {MediumModel} from '../../model/MediumModel';
+import {SpaceModel} from '../../model/SpaceModel';
+import {MediumTableModel} from '../../model/MediumTableModel';
+
+import {Base} from '../base/base.component';
+import {IBase} from '../base/ibase';
+
+import {MediosRequestDTO} from '../../model/dto/MediosRequestDTO';
+import {EspaciosRequestDTO} from '../../model/dto/EspaciosRequestDTO';
+
+import {MediosTableDTO} from '../../model/helper/MediosTableDTO';
+import {EspaciosTableDTO} from '../../model/helper/EspaciosTableDTO';
+
+import { Overlay } from 'angular2-modal';
+import { Modal } from 'angular2-modal/plugins/bootstrap';
+
+declare var jQuery: any;
+
+@Component({
+  selector: '[forms-wizard]',
+  templateUrl: './ofertas.template.html',
+  styleUrls: ['./ofertas.style.scss']
+})
+
+export class Ofertas extends Base {
+
+  /*----------------------------------------------------------------------------------------------------*/
+  structureDataId : number = 0;
+  versionNum : number = 0;
+  eventoData : Eventos = new Eventos();
+
+  viewTitle : string = "";
+
+  viewContent : any = {};
+  
+  viewActions : any[] = [];
+  actionsMap : any = {};
+
+  /*----------------------------------------------------------------------------------------------------*/
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private structureService : StructureService,
+    overlay: Overlay, vcRef: ViewContainerRef, public modal: Modal) {
+    super();
+  }
+
+  ngOnInit(): void {
+    //carga de parametros de entrada
+    this.structureDataId = this.route.snapshot.params['dataId'] || 0;
+    this.versionNum = this.route.snapshot.params['versionNum'] || 0;
+    this.loadEvento(this.structureDataId);
+    this.getView();
+  }
+
+  //funcion para cargar la configuracion de la pantalla
+  getView() {
+    this.structureService.getViewByAppId(1, this.versionNum).then(
+      data => {
+        this.viewContent = data;
+        this.viewActions = data.viewAction || [];
+        console.log(this.viewActions);
+         //armado de mapa a partir de campos
+        let actionsResult = this.viewActions.reduce(function (map, obj) {
+          map[obj.htmlId] = obj;
+          return map;
+        }, {});
+        console.log("pintando mapa de resultados");
+        console.log(actionsResult);
+
+        this.actionsMap = actionsResult;
+        this.viewTitle = this.viewContent.viewTitle;
+      }
+    );
+  }
+
+  alsuperFinish(){
+    alert("terminando de metodo custom alsuper");
+  }
+
+  loadEvento(structureDataId : number){
+    this.structureService.getEventoByStructureDataId(structureDataId).then(
+      data => {
+        this.eventoData = data;
+      });
+  }
+
+  //funcion para regresar a bandeja
+  cancel(){
+     this.router.navigateByUrl('app');
+  }
+
+  //funcion para finalizar captura
+  finalizarCaptura(){
+    let requestData : any = {};
+    requestData.dataId = this.structureDataId;
+    requestData.versionNum = this.versionNum;
+    requestData.valueCode = "SIGUIENTE";
+    requestData.eventosId = this.eventoData.eventosId;
+
+    this.structureService.saveOffer(requestData).then(
+      response => {
+        if(response.status == 200 ){
+          this.router.navigateByUrl('app');
+        }
+      },
+      error =>{
+          this.modal.alert().title('Error al finalizar captura').body(error._body).open();
+      }
+    );
+  }
+
+  //funcion para regresar de etapa
+  regresarEtapa(){
+    let requestData : any = {};
+    requestData.dataId = this.structureDataId;
+    requestData.versionNum = this.versionNum;
+    requestData.valueCode = "REGRESAR";
+    requestData.eventosId = this.eventoData.eventosId;
+
+    this.structureService.saveOffer(requestData).then(
+      response => {
+        if(response.status == 200 ){
+          this.router.navigateByUrl('app');
+        }
+      },
+      error =>{
+          this.modal.alert().title('Error al finalizar captura').body(error._body).open();
+      }
+    );
+  }
+
+  ngAfterViewInit() {
+  }
+}

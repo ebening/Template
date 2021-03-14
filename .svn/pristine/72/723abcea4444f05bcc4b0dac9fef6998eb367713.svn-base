@@ -1,0 +1,72 @@
+import { Component, ViewEncapsulation, AfterViewInit,ViewContainerRef  } from '@angular/core';
+import { Select2OptionData } from 'ng2-select2';
+
+import { Router, ActivatedRoute} from '@angular/router';
+
+import {StructureService} from '../../service/structure.service';
+import {UtilService} from '../../service/util.service';
+import {CatalogService} from '../../service/catalog.service';
+
+import {Eventos} from '../../model/Eventos';
+import {MediumModel} from '../../model/MediumModel';
+import {SpaceModel} from '../../model/SpaceModel';
+import {MediumTableModel} from '../../model/MediumTableModel';
+
+import {MediosRequestDTO} from '../../model/dto/MediosRequestDTO';
+import {EspaciosRequestDTO} from '../../model/dto/EspaciosRequestDTO';
+
+import {MediosTableDTO} from '../../model/helper/MediosTableDTO';
+import {EspaciosTableDTO} from '../../model/helper/EspaciosTableDTO';
+
+import { Overlay } from 'angular2-modal';
+import { Modal } from 'angular2-modal/plugins/bootstrap';
+
+declare var jQuery: any;
+
+@Component({
+  selector: '[base]',
+  template: `<div></div>`
+})
+
+export class Base {
+
+  /*----------------------------------------------------------------------------------------------------*/
+  am : any = {};
+  /*----------------------------------------------------------------------------------------------------*/
+
+  constructor(){
+    this.buildDefaultActionsMap();
+  }
+
+  returnMethod(){
+    alert("return metodo base");
+  }
+
+  finishMethod(){
+    alert("finish metodo base");
+  }
+
+  ngOnInit(): void {
+    this.buildDefaultActionsMap();
+  }
+
+  buildDefaultActionsMap(){
+    let defaultActionsMap = {};
+    defaultActionsMap['return-btn'] = 'returnMethod';
+    defaultActionsMap['finish-btn'] = 'finishMethod';
+    this.am = defaultActionsMap;
+  }
+
+  getButtonAction(key:string, map:{}):string{
+      
+      console.log("accion: " + key);
+      if(map[key] === undefined){
+        console.log(this.am);
+        let x = this.am[key];
+        console.log(x);
+        return x;
+      }else{
+        return map[key].defaultMethod;
+      }
+  }
+}

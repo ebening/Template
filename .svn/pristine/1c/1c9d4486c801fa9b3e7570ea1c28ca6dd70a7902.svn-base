@@ -1,0 +1,46 @@
+.redips-drag {
+	cursor: move;
+	margin: auto;
+	background-color: white;
+	text-align: center;
+	font-size: 8pt;
+	width: 150px;
+	height: 150px;
+	border-radius: 4px; /* Opera, Chrome */
+	-moz-border-radius: 4px; /* FF */
+}
+
+/* make drag container visible */
+#redips-drag {
+	width: 100%;
+	border: 0;
+	display: table;
+	margin: auto;
+	padding: 0px;
+}
+
+/* tables */
+div#redips-drag table {
+	background-color: #F2F5F7;
+	border-collapse: collapse;
+	margin: 10px;
+	width: 99%;
+}
+
+/* table cells */
+div#redips-drag td {
+	border: 1px #AED0EA solid;
+	text-align: center;
+	font-size: 10pt;
+	padding: 1px;
+}
+
+/* blue objects */
+.blue {
+	border: 2px solid #396F98;
+}
+
+/* orange objects */
+.orange {
+	border: 2px solid #A65A3C;
+}

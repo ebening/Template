@@ -1,0 +1,82 @@
+/**
+ * Created by edgar on 02/03/17.
+ */
+
+
+import {Component, ViewEncapsulation} from "@angular/core";
+import {IMultiSelectSettings, IMultiSelectTexts, IMultiSelectOption} from "../shared/multiselect-dropdown";
+import {ServerDataSource} from "ng2-smart-table";
+import {Http} from "@angular/http";
+
+@Component ({
+  selector: 'medios-admin',
+  templateUrl: 'medios-admin.template.html',
+  encapsulation: ViewEncapsulation.None,
+})
+
+export class MediosAdmin {
+
+
+
+  private titulo: string[];
+  private colorSelect: string = 'blue';
+
+
+  settings = {
+    columns: {
+      id: {
+        title: 'ID'
+      },
+      albumId: {
+        title: 'Album'
+      },
+      title: {
+        title: 'Title'
+      },
+      url: {
+        title: 'Url'
+      }
+    }
+  };
+
+  source: ServerDataSource;
+
+  constructor(http: Http) {
+    this.source = new ServerDataSource(http, { endPoint: 'https://jsonplaceholder.typicode.com/photos' });
+  }
+
+  /*settings = {
+    columns: {
+      id: {
+        title: 'ID'
+      },
+      name: {
+        title: 'Full Name'
+      },
+      username: {
+        title: 'User Name'
+      },
+      email: {
+        title: 'Email'
+      }
+    }
+  };
+
+  data = [
+    {
+      id: 1,
+      name: "Leanne Graham",
+      username: "Bret",
+      email: "Sincere@april.biz"
+    },
+    // ... other rows here
+    {
+      id: 11,
+      name: "Nicholas DuBuque",
+      username: "Nicholas.Stanton",
+      email: "Rey.Padberg@rosamond.biz"
+    }
+  ];*/
+
+}
+

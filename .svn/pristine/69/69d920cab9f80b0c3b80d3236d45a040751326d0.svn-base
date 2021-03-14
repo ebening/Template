@@ -1,0 +1,278 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Usted esta Aqui</li>
+  <li class="breadcrumb-item active">Captura de Información de Diseño</li>
+</ol>
+<h1 class="page-title"><span class="fw-semi-bold">Información de Diseño</span></h1>
+
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <section class="widget min-padding-bottom" widget style="margin-bottom:10px;">
+            <legend class="no-margin-bottom"><strong>Información del Evento</strong></legend>
+            <div class="form-horizontal" role="form">
+                <div class="row">
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-9">
+
+                        <div class="form-group row no-margin-bottom">
+                            <label for="eventId" class="col-md-auto col-lg-auto col-form-label text-md-left container-padding-left">No. Evento:</label>
+                            <div class="col-md-1 no-padding-rigth">
+                                <strong>
+                                    <input type="text" id="eventId" class="form-control no-padding-left readonly-button"
+                                           disabled [(ngModel)]="eventoData.eventosId">
+                                </strong>
+                            </div>
+                            <label for="eventName" class="col-md-auto col-lg-auto col-form-label text-md-left">Nombre Evento:</label>
+                            <div class="col-md-7 col-lg-7">
+                                <input type="text" id="eventName" class="form-control no-padding-left readonly-button"
+                                       disabled [(ngModel)]="eventoData.nombre">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+    <section style="width: 100%" class="widget" widget>
+        <header>
+            <div class="widget-controls">
+                <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+            </div>
+        </header>
+        <div class="widget-body">
+            <!-- row de tabla de medios -->
+            <div class="row">
+                <div class="col-lg-3 col-xs-12">
+
+                    <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+                        <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+                            <span class="input-group-addon">
+                                <i class="fa fa-search"></i>
+                            </span>
+                            <input (keyup)="searchTableMedios($event)" class="form-control form-control-sm" id="table-search-input"
+                                   type="text" placeholder="Buscar">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered table-hover no-margin-bottom" id="mediosTable">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Listado de Medios</th>
+                                    <th colspan="2">Fotos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="mediosTable.content.length == 0">
+                                    <td colspan="2" style="width: 80%;font-size: 0.9rem;">No hay información...</td>
+                                    <td colspan="2" style="width: 20%; font-size: 0.9rem;">{{ uploader?.queue?.length }}</td>
+                                </tr>
+                                <tr *ngFor="let medio of mediosTable.content" [ngClass]="{'border': medioSeleccionado == medio.mediosId }">
+                                    <td class="subject" style="width: 90%; font-size: 0.9rem;" (click)="onCellClick(medio, $event)">{{medio.descripcion}}</td>
+                                    <td>
+                                        <a [ngClass]="{'link': medioSeleccionado != medio.mediosId }" (click)="copyMedioToForm(medio)"><i class="fa fa-copy"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div *ngIf="mediosTable.needPagination() > 0" class="clearfix mb-xs">
+                            <div class="float-xs-right" id="folder-stats">
+                                <ul class="pagination pagination-sm">
+
+                                    <li [ngClass]="{'disabled': mediosTable.page == 0 }" class="prev page-item"><a class="page-link" (click)="moveMedioTableToPage(0)"><i class="fa fa-chevron-left"></i></a></li>
+
+                                    <li *ngFor="let p of mediosTable.pagination" [ngClass]="{'active': mediosTable.page == p }" class="page-item"><a class="page-link" (click)="moveMedioTableToPage(p)">{{p+1}}</a></li>
+
+                                    <li [ngClass]="{'disabled': (mediosTable.data.totalPages -1) == mediosTable.page }" class="next page-item"><a class="page-link" (click)="moveMedioTableToPage(mediosTable.data.totalPages -1)"><i class="fa fa-chevron-right"></i></a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-lg-4 col-xs-12" style="border-left : 1px solid #e5e5e5;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12 col-xs-12" style="margin-bottom: 40px" align='center'>
+                                <div ng2FileDrop
+                                     [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
+                                     (fileOver)="fileOverBase($event)"
+                                     [uploader]="uploader"
+                                     class="well my-drop-zone">
+                                    {{uploader.queue[0] == null ? fileLoaderMsg : fileLoaderMsg}}
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-xs-12" style="border-left : 0px solid #e5e5e5;">
+                    <div class="row">
+                        <div class="col-lg-8 col-xs-12" style="border-left : 0px solid #e5e5e5;">
+                            <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+                                <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                    <input (keyup)="searchTableMedios($event)" class="form-control form-control-sm" id="table-search-input"
+                                           type="text" placeholder="Buscar">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divDesign">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">Nombre</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of uploader.queue">
+                                        <td><strong>{{ item?.file?.name }}</strong></td>
+                                        <td class="text-center">
+                                            <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                                            <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                                        </td>
+                                        <td nowrap>
+                                            <button type="button" class="btn btn-success btn-xs"
+                                                    (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs"
+                                                    (click)="item.remove()">
+                                                <span class="glyphicon glyphicon-remove"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-8 col-xs-12" style="border-left : 0px solid #e5e5e5;">
+                            <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+                                <button type="button" class="btn btn-success btn-s"
+                                        (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+                                    <span class="glyphicon glyphicon-ok"></span> Grabar  <!--"glyphicon glyphicon-upload"-->
+                                </button>
+                                <button type="button" class="btn btn-danger btn-s"
+                                        (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                                    <span class="glyphicon glyphicon-remove"></span> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                </div>
+                    </div>
+                </div>
+       </div>
+                                       <!-- </tbody>-->
+                                        <!--<div class="form-group row">
+                                            <div class="col-md-12">
+                                                <div class="btn-group pull-right">
+                                                    <a class="link" (click)="agregarEspacio()">
+                                                        Agregar &nbsp;<i class="fa fa-plus"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>-->
+    </section>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <section style="width: 100%" class="widget" widget>
+            <header>
+                <div class="widget-controls">
+                    <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                    <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+                </div>
+            </header>
+            <div class="widget-body">
+                <!-- row de tabla de medios -->
+                <div class="row">
+                    <div class="col-lg-9 col-xs-12">
+                    </div>
+                    <div class="col-lg-3 col-xs-12" style="border-left : 0px solid #e5e5e5;">
+                        <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+                            <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <input (keyup)="searchTableMedios($event)" class="form-control form-control-sm" id="table-search-input"
+                                       type="text" placeholder="Buscar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12" style="border-left : 1px solid #e5e5e5;">
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered table-hover no-margin-bottom" id="mediosTable">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Espacio</th>
+                                        <th colspan="2">Area</th>
+                                        <th colspan="2">Grupo Articulos</th>
+                                        <th colspan="2">Codigo Oficina</th>
+                                        <th colspan="2">Codigo Barras</th>
+                                        <th colspan="2">Productos</th>
+                                        <th colspan="2">Marca</th>
+                                        <th colspan="2">Modelo</th>
+                                        <th colspan="2">Presentacion</th>
+                                        <th colspan="2">Precio Regular</th>
+                                        <th colspan="2">Precio Oferta</th>
+                                        <th colspan="2">Preciazo Club</th>
+                                        <th colspan="2">Precio</th>
+                                        <th colspan="2">Observaciones</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+                                <!-- row de botonera -->
+<div class="row" style="margin-top:10px;">
+    <div class="col-lg-12 col-xs-12">
+        <div class="form-horizontal" role="form">
+            <fieldset>
+                <div class="form-group row justify-content-between">
+                    <div class="col-lg-6"></div>
+
+                    <div class="col-lg-6 right">
+
+                        <button class="btn small-button btn-primary my-btn-primary static-btn" role="button" (click)="saveMedios()">
+                            Grabar &nbsp; <i class="glyphicon glyphicon-floppy-save"></i>
+                        </button>
+
+                        <button class="btn small-button btn-danger my-btn-danger static-btn" role="button" (click)="delete()">
+                            Borrar &nbsp; <i class="fa fa-eraser"></i>
+                        </button>
+
+                        <button class="btn small-button btn-success my-btn-success static-btn" role="button" (click)="finalizarCaptura()">
+                            Terminar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+
+                        <button class="btn small-button btn-warning my-btn-warning static-btn" role="button" (click)="cancel()">
+                            Cancelar &nbsp; <i class="glyphicon glyphicon-remove"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<!-- fin row botonera -->

@@ -1,0 +1,33 @@
+/**
+ * Created by jdominguez on 2/16/17.
+ */
+
+
+import {Component, ElementRef, ViewChild} from "@angular/core";
+import {DefaultEditor} from "ng2-smart-table";
+import {UtilService} from "../../service/util.service";
+
+@Component({
+  template: '<datetime style="width: 300px" #dateVigencia id="vigencia" (dateChange)="updateValue()"  [timepicker]="false" [datepicker]="fechaInicialOpts" ' +
+  '[(ngModel)]="fechaSelected"></datetime><br><datetime (dateChange)="updateValue()" [timepicker]="false" [datepicker]="fechaInicialOpts" ' +
+  '[(ngModel)]="endDate"></datetime>',
+})
+export class VigenciaEditor extends DefaultEditor {
+
+  @ViewChild('dateVigencia') dateElement: ElementRef;
+
+  private fechaSelected: Date = new Date();
+  private endDate: Date = new Date();
+  private fechaInicialOpts: any = {};
+
+  constructor(private utilService: UtilService){
+    super();
+    this.fechaInicialOpts = this.utilService.loadDateOptions(new Date(), null);
+  }
+
+  updateValue(): void{
+    let tempStr: string = 'Del ' + this.fechaSelected.getDate() + "/" + this.fechaSelected.getMonth() + "/" + this.fechaSelected.getFullYear() + ' Al ' +
+      this.endDate.getDate() + '/' + this.endDate.getMonth() + '/' + this.endDate.getFullYear();
+    this.cell.newValue = tempStr;
+  }
+}

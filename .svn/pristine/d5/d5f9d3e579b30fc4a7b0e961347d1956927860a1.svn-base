@@ -1,0 +1,9 @@
+
+.selectedRow {
+  background-color: #ecedec;
+}
+
+.panelBodyCustom {
+  padding: 0px;
+  margin-top: 15px;
+}

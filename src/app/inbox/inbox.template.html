@@ -1,0 +1,18 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Estas Aqui</li>
+  <li class="breadcrumb-item active">Administracion de Festivales</li>
+</ol>
+<div class="alert alert-info alert-sm pull-right animated bounceInLeft hide" id="app-alert">
+  <button type="button" class="ml-lg close" data-dismiss="alert" aria-hidden="true">×</button>
+  {{msjAlert}}
+</div>
+<h1 class="page-title"><span class="fw-semi-bold">Administracion {{etService.etiquetas.evento_PLURAL}}</span></h1>
+<div class="row">
+  <div class="col-lg-9 col-xl-10 col-xs-12">
+    <div class="col-lg-3 col-xl-2 col-xs-12">
+      <a class="btn btn-danger" href="#" id="compose-btn" (click)="handleComposeBtn()">{{btnTitle}}</a>
+    </div>
+    <div *ngIf="eventoListShow" eventoList></div>
+  </div>
+  <div *ngIf="eventoFormShow" (showMsjEmitter)="showAlertFunction($event)" (backFunctionEmitter)="changeEmailComponents($event)" eventoForm class="col-lg-9 col-xl-10 col-xs-12"></div>
+</div>

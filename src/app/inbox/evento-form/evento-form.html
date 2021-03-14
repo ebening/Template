@@ -1,0 +1,50 @@
+<br class="clear">
+<section class="widget" widget>
+  <div class="widget-body">
+    <form id="eventoForm" class="form-horizontal form-label-left" role="form">
+      <fieldset>
+        <legend>Nuevo {{etService.EVENTO}}</legend>
+        <div class="form-group row" *ngIf="isShow('evento_number_numeroEvento') > 0" id="evento_number_numeroEvento">
+          <label class="col-md-4 col-form-label text-md-right" for="eventoNumber">Numero {{etService.etiquetas.evento}}</label>
+          <label id="eventoNumber" class="col-md-8 col-form-label">{{currentEvento.eventosId}}</label>
+        </div>
+        <div class="form-group row" *ngIf="isShow('evento_string_nombreEvento') > 0" id="evento_string_nombreEvento">
+          <label class="col-md-4 col-form-label text-md-right" for="eventoName">Nombre {{etService.etiquetas.evento}}</label>
+          <div class="col-md-8">
+            <input [(ngModel)]="currentEvento.nombre" (change)="onNameChange()" [ngModelOptions]="{standalone: true}"
+                   type="text" id="eventoName" maxlength="50" class="form-control" style="width: 450px"
+                   data-toggle="popover" data-content="Campo Requerido" (keyup)="onKeypressName($event)">
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="isShow('evento_date_fechaInicial') > 0" id="evento_date_fechaInicial">
+          <label class="col-md-4 col-form-label text-md-right" for="fechaInicial">Fecha Inicial</label>
+          <div class="col-md-5">
+            <datetime id="fechaInicial"  [timepicker]="false" [datepicker]="fechaInicialOpts" (dateChange)="onFechaInicialChange()"
+                      data-toggle="popover" data-content="Campo Requerido"
+                      [(ngModel)]="currentEvento.fechaInicial" [ngModelOptions]="{standalone: true}"></datetime>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="isShow('evento_date_fechaFinal') > 0" id="evento_date_fechaFinal">
+          <label class="col-md-4 col-form-label text-md-right" for="fechaFinal">Fecha Final</label>
+          <div class="col-md-5">
+            <datetime id="fechaFinal" [timepicker]="false" [datepicker]="fechaFinalOpts" (dateChange)="onFechaFinalChange()"
+                      data-toggle="popover" data-content="Campo Requerido"
+                      [(ngModel)]="currentEvento.fechaFinal" [ngModelOptions]="{standalone: true}"></datetime>
+          </div>
+        </div>
+      </fieldset>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-2 pull-right">
+            <button type="submit" class="btn btn-success" (click)="saveEvento()">
+              Grabar &nbsp;
+              <span class="fa fa-save"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+

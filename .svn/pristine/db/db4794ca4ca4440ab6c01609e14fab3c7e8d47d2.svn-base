@@ -1,0 +1,150 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Usted esta Aqui</li>
+  <li class="breadcrumb-item active">Administraci&oacute;n de Medios</li>
+</ol>
+<h1 class="page-title"><span class="fw-semi-bold">Administraci&oacute;n de Medios</span></h1>
+
+
+<!-- row de datos de evento -->
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget min-padding-bottom" widget style="margin-bottom:10px;">
+      <legend class="no-margin-bottom"><strong>Informaci&oacute;n del Evento</strong></legend>
+      <div class="form-horizontal" role="form">
+        <div class="row">
+          <div class="col-lg-3" ></div>
+          <div class="col-lg-9">
+
+            <div class="form-group row no-margin-bottom">
+              <label for="eventId" class="col-md-auto col-lg-auto col-form-label text-md-left container-padding-left">No. Evento:</label>
+              <div class="col-md-1 no-padding-rigth">
+                <strong>
+                  <input type="text" id="eventId" class="form-control no-padding-left readonly-button"
+                         disabled [(ngModel)]="eventoData.eventosId">
+                </strong>
+              </div>
+              <label for="eventName" class="col-md-auto col-lg-auto col-form-label text-md-left">Nombre Evento:</label>
+              <div class="col-md-7 col-lg-7">
+                <input type="text" id="eventName" class="form-control no-padding-left readonly-button"
+                       disabled [(ngModel)]="eventoData.nombre">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-4">
+    <label for="eventSearch" class="col-form-label text-md-left">Buscar</label>
+    <input type="text"
+           (keyup)="searchMedios($event)"
+           class="form-control" name="eventSearch" id="eventSearch">
+
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover no-margin-bottom" id="mediosTable" >
+      <thead>
+      <tr>
+        <th colspan="2">Listado de Medios</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngIf="mediosTable.content.length == 0">
+        <td colspan="2" style="font-size: 0.9rem;">No hay informaci&oacute;n...</td>
+      </tr>
+      <tr *ngFor="let medio of mediosTable.content" [ngClass]="{'border': medioSeleccionado == medio.mediosId }" >
+        <td class="subject" style="width: 90%; font-size: 0.9rem;" (click)="onCellClick(medio, $event)">{{medio.descripcion}}</td>
+        <td>
+          <a [ngClass]="{'link': medioSeleccionado != medio.mediosId }" (click)="copyMedioToForm(medio)"><i class="fa fa-copy"></i></a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="mediosTable.needPagination() > 0" class="clearfix mb-xs">
+      <div class="float-xs-right" id="folder-stats">
+        <ul class="pagination pagination-sm">
+
+          <li [ngClass]="{'disabled': mediosTable.page == 0 }" class="prev page-item"><a class="page-link" (click)="moveMedioTableToPage(0)"><i class="fa fa-chevron-left"></i></a></li>
+
+          <li *ngFor="let p of mediosTable.pagination" [ngClass]="{'active': mediosTable.page == p }" class="page-item"><a class="page-link" (click)="moveMedioTableToPage(p)">{{p+1}}</a></li>
+
+          <li [ngClass]="{'disabled': (mediosTable.data.totalPages -1) == mediosTable.page }" class="next page-item"><a class="page-link" (click)="moveMedioTableToPage(mediosTable.data.totalPages -1)"><i class="fa fa-chevron-right"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    </div>
+
+  </div>
+  <div class="col-md-4">
+    <div class="row">
+      <div class="col-md-6"><p class="text-right pull-right">Paginas</p></div>
+      <div class="col-md-6">
+        <select class="form-control"><option>One</option><option>Two</option><option>Three</option></select>
+        <div class="btn-group btn-group-vertical pull-right">
+          <button class="btn btn-default ">Asignar +</button>
+          <button class="btn btn-default">Desasignar -</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-9 col-xs-12" style="border-left : 1px solid #e5e5e5;">
+    <div bootstrap-wizard class="form-wizard">
+
+      <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+      <ul class="pager wizard">
+        <li class="previous">
+          <a class="btn pull-left link">
+            <i class="fa fa-caret-left"></i> &nbsp; Anterior
+          </a>
+        </li>
+        <li class="next">
+          <a class="btn pull-right link" >
+            Siguiente &nbsp; <i class="fa fa-caret-right"></i></a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- row de botonera -->
+<div class="row">
+
+  <div class="col-lg-12 col-xs-12">
+          <!-- botones (a la derecha)-->
+          <div class=" pull-right">
+
+            <button class="btn small-button btn-primary my-btn-primary static-btn" role="button" (click)="saveMedios()">
+              Grabar &nbsp; <i class="glyphicon glyphicon-floppy-save"></i>
+            </button>
+
+            <button class="btn small-button btn-danger my-btn-danger static-btn" role="button" (click)="delete()">
+              Borrar &nbsp; <i class="fa fa-eraser"></i>
+            </button>
+
+            <button class="btn small-button btn-success my-btn-success static-btn" role="button" (click)="finalizarCaptura()">
+              Terminar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+            </button>
+
+            <button class="btn small-button btn-warning my-btn-warning static-btn" role="button" (click)="cancel()">
+              Cancelar &nbsp; <i class="glyphicon glyphicon-remove"></i>
+            </button>
+          </div>
+  </div>
+</div>
+<!-- fin row botonera -->
+
+

@@ -1,0 +1,200 @@
+/**
+ * Created by jdominguez on 2/14/17.
+ */
+
+
+import {Injectable} from "@angular/core";
+import {Select2OptionData} from "ng2-select2";
+@Injectable()
+export class OfertasData {
+
+
+  public subCategoData: any[] = [];
+
+  public categoriasData: Select2OptionData[] = [];
+
+  public comboTableData = [
+    {combo: '1', componente: '1,2,3'},
+    {combo: '2', componente: '23,45,87'}
+  ];
+
+  public singleObjectData = {
+    pagina: '1',
+    espacio: '2',
+    combo: '20',
+    componente: '1',
+    categoria: 'ABARROTES Y MG',
+    subcategoria: 'ABARROTES COMESTIBLES',
+    vigencia: 'Del 21/02/2017 Al 28/02/2017',
+    cobertura: '',
+    sku: '80001',
+    cbarras: '278364758493',
+    descripcion: 'Aceite',
+    marca: '123',
+    modelo: '',
+    tamaño: '1 Lt',
+    cantidad: '1',
+    pventa: '20.79',
+    poferta: '',
+    descuento: '',
+    pclub: '18.90',
+    vigenciapclub: 'MMJ',
+    canonazo: '',
+    obs: '',
+    recprov: '',
+    costo: '',
+    margen: '',
+    rebaja: '',
+    recuperacion: ''
+  };
+
+  public staticInitData: any[] = [
+    {
+      pagina: '1',
+      espacio: '2',
+      combo: '20',
+      componente: '1',
+      categoria: 'ABARROTES Y MG',
+      subcategoria: 'ABARROTES COMESTIBLES',
+      vigencia: 'Del 21/02/2017 Al 28/02/2017',
+      cobertura: '',
+      sku: '80001',
+      cbarras: '278364758493',
+      descripcion: 'Aceite',
+      marca: '123',
+      modelo: '',
+      tamaño: '1 Lt',
+      cantidad: '1',
+      pventa: '20.79',
+      poferta: '',
+      descuento: '',
+      pclub: '18.90',
+      vigenciapclub: 'MMJ',
+      canonazo: '',
+      obs: '',
+      recprov: '',
+      costo: '',
+      margen: '',
+      rebaja: '',
+      recuperacion: ''
+    },
+    {
+      pagina: '1',
+      espacio: '2',
+      combo: '20',
+      componente: '16',
+      categoria: 'ABARROTES Y MG',
+      subcategoria: 'ABARROTES COMESTIBLES',
+      vigencia: 'Del 21/02/2017 Al 28/02/2017',
+      cobertura: '',
+      sku: '80001',
+      cbarras: '278364758493',
+      descripcion: 'Aceite',
+      marca: 'MyBrand',
+      modelo: '',
+      tamaño: '946 ml',
+      cantidad: '1',
+      pventa: '22.83',
+      poferta: '',
+      descuento: '',
+      pclub: '18.90',
+      vigenciapclub: 'MMJ',
+      canonazo: '',
+      obs: '',
+      recprov: '',
+      costo: '',
+      margen: '',
+      rebaja: '',
+      recuperacion: ''
+    },
+    {
+      pagina: '1',
+      espacio: '2',
+      combo: '20',
+      componente: '1',
+      categoria: 'ABARROTES Y MG',
+      subcategoria: 'ABARROTES COMESTIBLES',
+      vigencia: 'Del 21/02/2017 Al 28/02/2017',
+      cobertura: '',
+      sku: '80001',
+      cbarras: '278364758493',
+      descripcion: 'Aceite',
+      marca: 'Nutriolli',
+      modelo: '',
+      tamaño: '1 Lt',
+      cantidad: '1',
+      pventa: '20.79',
+      poferta: '',
+      descuento: '',
+      pclub: '18.90',
+      vigenciapclub: 'MMJ',
+      canonazo: '',
+      obs: '',
+      recprov: '',
+      costo: '',
+      margen: '',
+      rebaja: '',
+      recuperacion: ''
+    },
+    {
+      pagina: '1',
+      espacio: '2',
+      combo: '21',
+      componente: '16',
+      categoria: 'ABARROTES Y MG',
+      subcategoria: 'ABARROTES COMESTIBLES',
+      vigencia: 'Del 21/02/2017 Al 28/02/2017',
+      cobertura: '',
+      sku: '80001',
+      cbarras: '278364758493',
+      descripcion: 'Aderezo para Ensalada',
+      marca: 'Garden Club',
+      modelo: '',
+      tamaño: '905 grs',
+      cantidad: '1',
+      pventa: '43.89',
+      poferta: '39.90',
+      descuento: '',
+      pclub: '',
+      vigenciapclub: '',
+      canonazo: '',
+      obs: '',
+      recprov: '',
+      costo: '',
+      margen: '',
+      rebaja: '',
+      recuperacion: ''
+    }
+  ];
+
+  public columnas: any[] = [
+    {label: 'Página', key: 'pagina', show: true},
+    {label: 'Espacio', key: 'espacio',show: true},
+    {label: 'Combo', key: 'combo',show: true},
+    {label: 'Componente', key: 'componente',show: true},
+    {label: 'Área', key: 'categoria',show: true},
+    {label: 'Grupo Artículos', key: 'subcategoria',show: true},
+    {label: 'Vigencia', key: 'vigencia',show: true},
+    {label: 'Cobertura', key: 'cobertura',show: true},
+    {label: 'Clave Producto', key: 'sku',show: true},
+    {label: 'Código Barras', key: 'cbarras',show: true},
+    {label: 'Descripción', key: 'descripcion',show: true},
+    {label: 'Marca', key: 'marca',show: true},
+    {label: 'Modelo', key: 'modelo',show: true},
+    {label: 'Tamaño', key: 'tamaño',show: true},
+    {label: 'Cantidad', key: 'cantidad',show: true},
+    {label: 'Precio Venta', key: 'pventa',show: true},
+    {label: 'Precio Oferta', key: 'poferta',show: true},
+    {label: '% Descuento', key: 'descuento',show: true},
+    {label: 'Preciazo Club', key: 'pclub',show: true},
+    {label: 'Vigencia Preciazo Club', key: 'vigenciapclub',show: true},
+    {label: 'Cañonazo', key: 'canonazo',show: true},
+    {label: 'Observaciones', key: 'obs',show: true},
+    {label: 'Recuperación con Proveedor', key: 'recprov',show: true},
+    {label: 'Costo con Impuesto', key: 'costo',show: true},
+    {label: '% Margen Real', key: 'margen',show: true},
+    {label: '$ Rebaja', key: 'rebaja',show: true},
+    {label: '% Recuperación', key: 'recuperacion',show: true},
+  ];
+
+}

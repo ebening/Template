@@ -1,0 +1,10 @@
+#contenedor{
+  width: 100%;
+  height: 600px;
+  font-size: 12px;
+  margin: 2px;
+  background-image: url(assets/img/odMasterFondo.jpg);
+  background-repeat: no-repeat;
+  max-width: 99.9%;
+  background-size: 100% 100%;
+}

@@ -1,0 +1,138 @@
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../scss/variables";
+@import "../scss/mixins";
+@import "../scss/select2-variables";
+@import "../../../node_modules/select2/src/scss/core";
+@import "../../../node_modules/select2-bootstrap-theme/src/select2-bootstrap";
+@import "../../../node_modules/dropzone/dist/dropzone";
+
+/******************* Columnas Table Ofertas ***********/
+
+.tableClassDemo {
+  font-size: 1.5em;
+}
+
+.vigencia {
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
+
+.subcategoria {
+  min-width: 150px !important;
+}
+
+.categoria {
+  min-width: 150px !important;
+}
+
+.pagina {
+  max-width: 80px !important;
+}
+
+/******************* Importar Drag n' Drop ***********/
+.drop-zone {
+  border: dotted 3px lightgray;
+  height: 80px;
+  padding-top: 5%;
+  text-align: center;
+}
+
+.nv-file-over {
+  border: dotted 3px red;
+} /* Default class applied to drop zones on over */
+
+.another-file-over-class {
+  border: dotted 3px green;
+}
+
+/**************************************************
+ * Select2
+ **************************************************/
+.select2 input {
+  width: 100%;
+}
+
+.select2-container .select2-choice abbr {
+  background: url('assets/select2/select2.png') right top no-repeat;
+}
+
+.select2-container .select2-choice .select2-arrow b {
+  background: url('assets/select2/select2.png') no-repeat 0 1px;
+}
+
+.select2-search input {
+  background: #fff url('assets/select2/select2.png') no-repeat 100% -22px;
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+html[dir="rtl"] .select2-search input {
+  background: #fff url('assets/select2/select2.png') no-repeat -37px -22px;
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+.select2-search-choice-close {
+  background: url('assets/select2/select2.png') right top no-repeat;
+}
+
+.select2-search input.select2-active {
+  background: #fff url('assets/select2/select2-spinner.gif') no-repeat 100%;
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+.select2-more-results.select2-active {
+  background: #f4f4f4 url('assets/select2/select2-spinner.gif') no-repeat 100%;
+}
+
+.select2-container-multi .select2-choices .select2-search-field input.select2-active {
+  background: #fff url('assets/select2/select2-spinner.gif') no-repeat 100% !important;
+}
+
+/****** Retina-ize icons */
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-resolution: 2dppx)  {
+  .select2-search input,
+  .select2-search-choice-close,
+  .select2-container .select2-choice abbr,
+  .select2-container .select2-choice .select2-arrow b {
+    background-image: url('assets/select2/select2x2.png') !important;
+  }
+}
+
+/**************************************
+/**  PopOver - Mensajes Validaciones
+***************************************/
+
+.popover {
+  background-color: #e79693;
+}
+
+.popover::after {
+  border-width: inherit;
+}
+
+.popover-content {
+  color: darkred;
+  font-weight: bold;
+  padding: 9px 14px;
+}
+
+/**
+ * Dropzone
+ */
+
+.dropzone{
+  border: 2px dashed #ccc;
+  @include border-radius($border-radius);
+}

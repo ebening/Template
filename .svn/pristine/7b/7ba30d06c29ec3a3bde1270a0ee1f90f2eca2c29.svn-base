@@ -1,0 +1,297 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Usted esta Aqui</li>
+  <li class="breadcrumb-item active">Captura de Información de Ofertas</li>
+</ol>
+<h1 class="page-title"><span class="fw-semi-bold">Información de Ofertas</span></h1>
+
+<!-- row de datos de evento -->
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget min-padding-bottom" widget style="margin-bottom:10px;">
+      <legend class="no-margin-bottom"><strong>Información del Evento</strong></legend>
+      <div class="form-horizontal" role="form">
+          <div class="row">
+            <div class="col-lg-3" ></div>
+            <div class="col-lg-9">
+
+              <div class="form-group row no-margin-bottom">
+                <label for="eventId" class="col-md-auto col-lg-auto col-form-label text-md-left container-padding-left">No. Evento:</label>
+                <div class="col-md-1 no-padding-rigth">
+                  <strong>
+                  <input type="text" id="eventId" class="form-control no-padding-left readonly-button"
+                    disabled [(ngModel)]="eventoData.eventosId">
+                  </strong>
+                </div>
+                <label for="eventName" class="col-md-auto col-lg-auto col-form-label text-md-left">Nombre Evento:</label>
+                <div class="col-md-7 col-lg-7">
+                  <input type="text" id="eventName" class="form-control no-padding-left readonly-button"
+                    disabled [(ngModel)]="eventoData.nombre">
+                </div>
+              </div>
+
+            </div>
+          </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget" widget>
+      
+      <div class="widget-body">
+
+        <!--
+        <h3>En construcción. Vuelva mas tarde...</h3>
+        -->
+
+        <!-- row de tabla dinamica -->
+
+
+
+
+        <div class="row">
+
+            <!-- div de tabla -->
+          <div class="col-lg-3 col-xs-12">
+
+            <section class="widget no-padding" widget>
+              <header>
+                <div class="widget-controls no-padding-horizontal">
+                  <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                  <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+                </div>
+              </header>
+              <div class="widget-body">
+                <label for="comboSearch" class="col-form-label text-md-left">Grid de Combos</label>
+                <input type="text"
+                  (keyup)="searchCombos($event)"
+                  placeholder="Buscar combo..."
+                  class="form-control" name="comboSearch" id="comboSearch">
+
+                <div class="table-responsive">
+
+                  <table class="table table-bordered table-hover no-margin-bottom" id="combosTable" >
+                    <thead>
+                      <tr>
+                        <th>Combo</th>
+                        <th>Componente</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody style="min-height: 300px!important;">
+                      <tr>
+                        <td colspan="3" style="font-size: 0.9rem;">No hay información...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <!--
+            <label for="comboSearch" class="col-form-label text-md-left">Buscar</label>
+            <input type="text"
+              (keyup)="searchCombos($event)"
+              class="form-control" name="comboSearch" id="comboSearch">
+
+            <div class="table-responsive">
+
+              <table class="table table-bordered table-hover no-margin-bottom" id="combosTable" >
+                <thead>
+                  <tr>
+                    <th>Combo</th>
+                    <th>Componente</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody style="min-height: 300px!important;">
+                  <tr>
+                    <td colspan="3" style="font-size: 0.9rem;">No hay información...</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div *ngIf="mediosTable.needPagination() > 0" class="clearfix mb-xs">
+                <div class="float-xs-right" id="folder-stats">
+                  <ul class="pagination pagination-sm">
+
+                    <li [ngClass]="{'disabled': mediosTable.page == 0 }" class="prev page-item"><a class="page-link" (click)="moveMedioTableToPage(0)"><i class="fa fa-chevron-left"></i></a></li>
+
+                    <li *ngFor="let p of mediosTable.pagination" [ngClass]="{'active': mediosTable.page == p }" class="page-item"><a class="page-link" (click)="moveMedioTableToPage(p)">{{p+1}}</a></li>
+
+                    <li [ngClass]="{'disabled': (mediosTable.data.totalPages -1) == mediosTable.page }" class="next page-item"><a class="page-link" (click)="moveMedioTableToPage(mediosTable.data.totalPages -1)"><i class="fa fa-chevron-right"></i></a></li>
+
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+            -->
+
+          </div><!-- fin div tabla-->
+
+          <div class="col-lg-9 col-xs-12" style="border-left : 1px solid #e5e5e5; padding-bottom: 10px;"> 
+            
+            <section class="widget no-padding" widget>
+              <header>
+                <div class="widget-controls no-padding-horizontal">
+                  <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                  <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+                </div>
+              </header>
+              <div class="widget-body">
+                 <label for="ofertasSearch" class="col-form-label text-md-left">Grid de Ofertas</label>
+                <input type="text" placeholder="Buscar Oferta..." (keyup)="searchOfertas($event)" class="form-control" name="ofertasSearch" id="ofertasSearch">
+
+                <div *ngIf="existsDynamicTable('ofertas-grid') > 0" class="table-responsive">
+                  <table class="table table-bordered table-hover no-margin-bottom" style="overflow: scroll;" id="ofertas-grid" >
+                    <thead>
+                      <tr>
+                        <!--
+                        <th *ngFor="let column of gridsMap['ofertas-grid'].gridConfig" 
+                        -->
+                        <th *ngFor="let column of getGridDef('ofertas-grid','gridConfig')"
+                          class="subject" [ngStyle]="{'min-width': column.style}">{{column.label}}</th>
+                      </tr>
+                    </thead>
+                    <tbody style="min-height: 300px!important;">
+                      <tr>
+                          <td [attr.colspan]="gridsMap['ofertas-grid'].gridConfig.length" style="font-size: 0.9rem;">No hay información...</td>
+                      </tr>
+                      <!--
+                      <tr *ngIf="espaciosTable.content.length == 0">
+                        <td colspan="5" style="font-size: 0.9rem;">No hay información...</td>
+                      </tr>
+                      <tr *ngFor="let espacio of espaciosTable.content">
+                        <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.paginas.text}}</td>
+                        <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.espaciosId}}</td>
+                        <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.categorias.text}}</td>
+                        <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.subCategorias == undefined ? 'cargando...' : espacio.subCategorias.text}}</td>
+                        <td>
+                          <a (click)="borrarEspaciosDeGridDos(espacio)"><i class="glyphicon glyphicon-remove"></i></a>
+                        </td>
+                      </tr>
+                      -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          
+          </div>
+
+        </div>
+        <!-- fin de row tabla dinamica -->
+
+        <div class="row">
+
+          <div class="col-lg-3 col-xs-12">
+          </div>
+          <div class="col-lg-9 col-xs-12"  style="border-left : 1px solid #e5e5e5;">
+            <label>Alta/Edición de Oferta</label>
+          </div>
+        </div>
+          
+
+        <!-- row de formulario -->
+        <div class="row">
+
+          <div class="col-lg-3 col-xs-12">
+          </div>
+          
+          <div class="col-lg-9 col-xs-12"  style="border-left : 1px solid #e5e5e5;">
+          <section class="widget no-padding" style="border: 1px solid #e5e5e5!important; padding: 2px;" widget>
+              <header>
+                <div class="widget-controls no-padding-horizontal">
+                  <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                  <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+                </div>
+              </header>
+              <div class="widget-body">
+                    <div class="form-horizontal" role="form">
+                      <fieldset>
+                      <div class="form-group row justify-content-between">
+                          <form action='' method="POST" data-parsley-priority-enabled="false" novalidate="novalidate">
+                            <fieldset>
+
+                              <!-- pagina -->
+                              <div class="form-group row">
+                                <label class="col-md-3 text-md-right" for="combo">Combo</label>
+                                <div class="col-md-9">
+                                  <select2 id="combo"
+                                          (valueChanged)="comboChangeEvent($event)"
+                                          [data]="comboOptions" [options]="select2Options"
+                                          [width]="250">
+                                  </select2>
+
+                                </div>
+                              </div>
+
+                            </fieldset>
+                          </form>
+
+                        </div>
+                      </fieldset>
+                    </div>
+              </div>
+          </section>
+          </div>
+        </div>
+        <!-- fin row formulario -->
+
+
+        <!-- row de botonera -->
+        <div class="row">
+
+          <div class="col-lg-3 col-xs-12">
+          </div>
+          
+          <div class="col-lg-9 col-xs-12"  style="border-left : 1px solid #e5e5e5;">
+            <div class="form-horizontal" role="form">
+              <fieldset>
+               <div class="form-group row justify-content-between">
+                  
+                  <!-- campo de import -->
+                  <div class="col-lg-6 text-center text-info">
+                        <div fileDrop class="drop-zone custom-drop-zone" 
+                          [ngClass]="{'nv-file-over': fileIsOver, 'another-file-over-class' : fileOk}"
+                          [options]="options"
+                          (fileOver)="fileOver($event)"
+                          (onFileDrop)="onFileDrop($event)">
+                          {{uploader.queue[0] == null ? fileLoaderMsg : uploader.queue[0].file.name}}
+                        </div>  
+                  </div> 
+                  
+                  <!-- botones (a la derecha)-->
+                  <div class="col-lg-6 right">              
+                    
+                    <button class="btn small-button btn-danger my-btn-danger static-btn" 
+                        id="return-btn"
+                        (click)="this[getButtonAction('return-btn', this.actionsMap)]()">
+                      Regresar &nbsp; <i class="fa fa-rotate-left"></i>
+                    </button>
+
+                    <button class="btn small-button btn-success my-btn-success static-btn" 
+                        id="finish-btn" 
+                        (click)="this[getButtonAction('finish-btn', this.actionsMap)]()">
+                      Terminar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+                  
+                    <button class="btn small-button btn-warning my-btn-warning static-btn" role="button" (click)="cancel()">
+                      Cancelar &nbsp; <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                  </div>
+
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <!-- fin row botonera -->
+
+      </div>
+    </section>
+  </div>
+</div>

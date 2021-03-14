@@ -1,0 +1,91 @@
+/**
+ * Created by jgonzalez on 15/01/17.
+ */
+
+import { Injectable } from '@angular/core';
+import {Response, Headers, Http} from "@angular/http";
+import {Observable} from "rxjs";
+import 'rxjs/add/operator/toPromise';
+import {UtilService} from "./util.service";
+
+@Injectable()
+export class CatalogService {
+
+    constructor(
+        private util: UtilService,
+        private http: Http){
+
+    }
+
+    /*Funcion para obtener todos los Tipo de Medios*/
+    getTipoMedios(){
+        return this.getCatalogByCatalogName('tipoMedios');
+    }
+    getTipoMediosById(id:number){
+        return this.getCatalogByCatalogNameAndId('tipoMedios',id);
+    }
+
+    /*Funcion para obtener todas las categorias*/
+    getCategorias(){
+        return this.getCatalogByCatalogName('categorias');
+    }
+    /*Funcion para obtener todas las subCategorias*/
+    getSubCategorias(){
+        return this.getCatalogByCatalogName('subCategoria');
+    }
+
+    getSubCategoriasByCategoriasId(id : number){
+        return this.getCatalogByQueryAndId('subCategoria','findByCategoriasId',id);
+    }
+
+    getSubCategoriasByCategoriasIdSubscribe(id : number){
+        return this.getCatalogByQueryAndIdSubscribe('subCategoria','findByCategoriasId',id);
+    }
+
+    /*Funcion para obtener todas las zonas*/
+    getZonas(){
+        return this.getCatalogByCatalogName('zonas');
+    }
+    /*Funcion para obtener todos los espacios promocionales*/
+    getEspaciosPromocionales(){
+        return this.getCatalogByCatalogName('espaciosPromocionales');
+    }
+
+    /*funcion generica findAll catalogos*/
+    getCatalogByCatalogName(catalogName : string){
+        let finalUrl : string = `${this.util.url}${catalogName}/`;
+        let headers = new Headers({'Content-Type': 'application/json'});
+         return this.http.get(finalUrl).toPromise()
+        .then(data => data.json() )
+        .catch(this.error);
+    }
+
+    /*fucnion para obtener un catalogo en base a un filtro especifico*/
+    getCatalogByQueryAndId(catalogName:string, query:string, id:number){
+        let finalUrl : string = `${this.util.url}${catalogName}/${query}/${id}`;
+        let headers = new Headers({'Content-Type': 'application/json'});
+         return this.http.get(finalUrl).toPromise()
+        .then(data => data.json() )
+        .catch(this.error);
+    }
+
+    /*Funcion para actualizar un medio(encabezado)*/
+    getCatalogByQueryAndIdSubscribe(catalogName:string, query:string, id:number): Observable<Response> {
+        let finalUrl : string = `${this.util.url}${catalogName}/${query}/${id}`;
+        let headers = new Headers({'Content-Type': 'application/json'});
+        return this.http.get(finalUrl);
+  }
+
+    /*funcion generica findById catalogos*/
+    getCatalogByCatalogNameAndId(catalogName : string, id: number){
+        let finalUrl : string = `${this.util.url}${catalogName}/${id}`;
+        let headers = new Headers({'Content-Type': 'application/json'});
+         return this.http.get(finalUrl).toPromise()
+        .then(data => data.json() )
+        .catch(this.error);
+    }
+
+    error(error: any){
+        return Promise.reject(error.message || error);
+    }
+}

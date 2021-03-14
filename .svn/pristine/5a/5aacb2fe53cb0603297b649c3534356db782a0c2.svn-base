@@ -1,0 +1,450 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Usted esta Aqui</li>
+  <li class="breadcrumb-item active">Captura de Información de Ofertas</li>
+</ol>
+<h1 class="page-title"><span class="fw-semi-bold">Información de Ofertas</span></h1>
+
+<!-- row de datos de evento -->
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget min-padding-bottom" widget style="margin-bottom:10px;">
+
+      <!-- *************** Modal para visualizar columnas ********************* -->
+      <modal title="Visualizar Columnas" #showColumnsModal>
+        <modal-content>
+          <section class="widget" widget>
+            <div class="panel panel-default">
+              <div style="height: 400px; overflow: auto" class="panel-body">
+                <div *ngFor="let col of arrayCols" class="abc-checkbox abc-checkbox-success">
+                  <input [(ngModel)]="col.active" id="COL{{col.dateKey}}" type="checkbox">
+                  <label for="COL{{col.dateKey}}">{{col.label}}</label>
+                </div>
+              </div>
+            </div>
+          </section>
+        </modal-content>
+        <modal-footer>
+          <div class="row">
+            <div class="col-md-7"></div>
+            <div id="btnModal2">
+              <button (click)="applyColumnView()" type="button" class="btn small-button btn-primary">
+                <span class="fa fa-save fa-lg"></span>
+                Grabar
+              </button>
+              <button (click)="closeColumnHiddenModal()" type="button" class="btn small-button btn-danger">
+                <span class="fa fa-remove fa-lg"></span>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </modal-footer>
+      </modal>
+      <!-- ******************************************************** -->
+
+      <legend class="no-margin-bottom"><strong>Información del Evento</strong></legend>
+      <div class="form-horizontal" role="form">
+        <div class="row">
+          <div class="col-lg-3"></div>
+          <div class="col-lg-9">
+
+            <div class="form-group row no-margin-bottom">
+              <label for="eventId" class="col-md-auto col-lg-auto col-form-label text-md-left container-padding-left">No.
+                Evento:</label>
+              <div class="col-md-1 no-padding-rigth">
+                <strong>
+                  <input type="text" id="eventId" class="form-control no-padding-left readonly-button"
+                         disabled [(ngModel)]="eventoData.eventosId">
+                </strong>
+              </div>
+              <label for="eventName" class="col-md-auto col-lg-auto col-form-label text-md-left">Nombre Evento:</label>
+              <div class="col-md-7 col-lg-7">
+                <input type="text" id="eventName" class="form-control no-padding-left readonly-button"
+                       disabled [(ngModel)]="eventoData.nombre">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget" widget>
+      <div class="widget-body">
+        <div class="row">
+
+          <!-- div de tabla -->
+          <div *ngIf="showCombos" class="col-lg-3 col-xs-12">
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <strong>Administración Combos</strong>
+              </div>
+              <div style="padding: 0px" class="panel-body">
+                <section style="margin-top: 50px" class="widget no-padding" widget>
+                  <div class="widget-body">
+                    <input type="text"
+                           (keyup)="searchComboOnTable($event)"
+                           placeholder="Buscar combo..."
+                           class="form-control" name="comboSearch" id="comboSearch">
+
+                    <div class="table-responsive">
+
+                      <table class="table table-bordered table-hover no-margin-bottom" id="combosTable">
+                        <thead>
+                        <tr>
+                          <th>Combo</th>
+                          <th>Componente</th>
+                          <th style="text-align: center">
+                            <span (click)="showRowAddCombo()" style="cursor: pointer" title="Agregar"
+                                  class="fa fa-plus-circle fa-lg"></span>
+                          </th>
+                        </tr>
+                        </thead>
+                        <tbody style="min-height: 300px!important;">
+                        <tr *ngIf="addComboShowRow">
+                          <td>
+                            <label>{{currentCombo.combo}}</label>
+                            <!-- <input [(ngModel)]="currentCombo.combo" style="width: 60px" type="text" placeholder="Combo"> -->
+                          </td>
+                          <td>
+                            <input [(ngModel)]="currentCombo.componente" style="width: 110px" type="text"
+                                   placeholder="Componentes">
+                          </td>
+                          <td>
+                            <a (click)="addComboAction()" title="Grabar"><span class="fa fa-save fa-lg"></span></a>
+                            <a title="Cancelar" (click)="hideRowCombo()"><span class="fa fa-remove fa-lg"></span></a>
+                          </td>
+                        </tr>
+                        <tr *ngFor="let c of auxComboDemo">
+                          <td>
+                            {{c.combo}}
+                          </td>
+                          <td>
+                            {{c.componente}}
+                          </td>
+                          <td>
+                            <a (click)="editComboAction(c)" title="Editar"><span class="fa fa-pencil fa-lg"></span></a>
+                            <a (click)="deleteCombo(c)" title="Eliminar"><span class="fa fa-remove fa-lg"></span></a>
+                          </td>
+                        </tr>
+                        <tr *ngIf="arrayComboDemo.length == 0">
+                          <td colspan="3" style="font-size: 0.9rem;">No hay información...</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+          </div>
+
+          <div *ngIf="showAltaForm" class="col-lg-3 col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <strong>Formulario Oferta</strong>
+              </div>
+              <div class="panel-body" style="padding: 0px">
+                <section class="widget no-padding" style="border: 1px solid #e5e5e5!important; padding: 2px;" widget>
+                  <div id="divFormulario" class="widget-body">
+                    <form action='' class="form-horizontal form-label-left" method="POST" role="form">
+                      <fieldset>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="combo">Combo</label>
+                          <label class="col-md-7 col-form-label text-md-left" id="combo">{{currentOferta.combo}}</label>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="componente">Componente</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.componente" [ngModelOptions]="{standalone: true}" type="text" id="componente">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="categoria">Área</label>
+                          <div class="col-md-7">
+                            <select2 id="categoria"
+                                     (valueChanged)="onCategoriaSelected($event)"
+                                     [data]="categoriasData" [options]="select2Options"
+                                     [width]="130">
+                            </select2>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="subcategoria">Grupo Articulos</label>
+                          <div class="col-md-7">
+                            <select2 id="subcategoria"
+                                     (valueChanged)="onSubCategoriaSelected($event)"
+                                     [data]="subCategoData" [options]="select2Options"
+                                     [width]="130">
+                            </select2>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="claveproducto">Clave Producto</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.claveproducto" [ngModelOptions]="{standalone: true}" type="text" id="claveproducto">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="codigobarras">Codigo de Barras</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.codigobarras" [ngModelOptions]="{standalone: true}" type="text" id="codigobarras">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="descripcion">Descripción</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.descripcion" [ngModelOptions]="{standalone: true}" type="text" id="descripcion">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="marca">Marca</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.marca" [ngModelOptions]="{standalone: true}" type="text" id="marca">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="modelo">Modelo</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.modelo" [ngModelOptions]="{standalone: true}" type="text" id="modelo">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="tamano">Tamaño</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.size" [ngModelOptions]="{standalone: true}" type="text" id="tamano">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="cantidad">Cantidad</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.cantidad" [ngModelOptions]="{standalone: true}" type="text" id="cantidad">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="precioventa">Precio Venta</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.precioventa" [ngModelOptions]="{standalone: true}" type="text" id="precioventa">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="precioferta">Precio Oferta</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.preciooferta" [ngModelOptions]="{standalone: true}" type="text" id="precioferta">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="porcdescuento">Porcentaje Descuento</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.porcentajedescuento" [ngModelOptions]="{standalone: true}" type="text" id="porcdescuento">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="preciazoclub">Preciazo Club</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.preciazoclub" [ngModelOptions]="{standalone: true}" type="text" id="preciazoclub">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="vigpclub">Vigencia Preciazo Club</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.vigenciapreciazoclub" [ngModelOptions]="{standalone: true}" type="text" id="vigpclub">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="canonazo">Cañonazo</label>
+                          <div class="col-md-7">
+                            <input [(ngModel)]="currentOferta.canonazo" [ngModelOptions]="{standalone: true}" type="text" id="canonazo">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-5 col-form-label text-md-right" for="observaciones">Observaciones</label>
+                          <div class="col-md-7">
+                            <textarea [(ngModel)]="currentOferta.obs" [ngModelOptions]="{standalone: true}" id="observaciones"></textarea>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </form>
+                    <div class="col-md-12">
+                      <button (click)="onSaveOferta()" type="button" class="btn btn-small btn-primary pull-right">
+                        Guardar &nbsp;
+                        <span class="fa fa-save fa-lg"></span>
+                      </button>
+                      <button (click)="cleanForm()" type="button" class="btn btn-small btn-warning">
+                        Limpiar &nbsp;
+                        <span class="fa fa-remove fa-lg"></span>
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div [class.col-lg-9]="(showCombos && !showAltaForm) || (showAltaForm && !showCombos)"
+               [class.col-lg-12]="!showCombos && !showAltaForm"
+               [class.col-lg-6]="showAltaForm && showCombos"
+               style="border-left : 1px solid #e5e5e5; padding-bottom: 10px;">
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <strong>Administración Ofertas</strong>
+              </div>
+              <div class="panel-body">
+                <section class="widget no-padding" widget>
+                  <div class="widget-body">
+                    <div style="margin-bottom: 5px" class="width-50 float-xs-right">
+                      <button (click)="showColumnHiddenModal()" type="button" class="btn btn-default">
+                        <span class="fa fa-list fa-lg"></span>
+                      </button>
+                    </div>
+                    <a href="#" (click)="showComboAction()">{{showCombos == false ? 'Abrir Combos' : 'Cerrar Combos'}}</a> &nbsp;&nbsp;
+                    <a href="#" (click)="openAltaForm()">{{showAltaForm == false ? 'Nueva Oferta' : 'Cerrar Formulario'}}</a>
+                    <input type="text" placeholder="Buscar Oferta..." (keyup)="searchOfertaOnTable($event)"
+                           class="form-control" name="ofertasSearch" id="ofertasSearch">
+
+                    <div *ngIf="existsDynamicTable('ofertas-grid') > 0" class="table-responsive">
+                      <table [mfData]="auxInfoOfertas" #mf="mfDataTable" [mfRowsOnPage]="5"
+                             class="table table-bordered table-hover no-margin-bottom" style="overflow: scroll;"
+                             id="ofertas-grid">
+                        <thead>
+                        <tr>
+                          <!--
+                          <th *ngFor="let column of gridsMap['ofertas-grid'].gridConfig"
+                          -->
+                          <th></th>
+                          <template ngFor let-column [ngForOf]="arrayCols">
+                            <th *ngIf="column.active"
+                                class="subject" [ngStyle]="{'min-width': column.style}">
+                              {{column.label}}
+                            </th>
+                          </template>
+
+                        </tr>
+                        </thead>
+                        <tbody style="min-height: 300px!important;">
+                        <template ngFor let-reg [ngForOf]="mf.data">
+                          <tr [class.selectRow]="reg.selected">
+                            <td>
+                              <a (click)="onEditOferta(reg)" title="Editar"><span class="fa fa-pencil fa-lg"></span></a>
+                              <a (click)="deleteOferta(reg)" title="Eliminar"><span class="fa fa-remove fa-lg"></span></a>
+                            </td>
+                            <template ngFor let-column [ngForOf]="arrayCols">
+                              <td *ngIf="column.active" (click)="onClickRowOferta(reg)" [class.permitSelectRow]="addComboShowRow">
+                                {{reg[column.dateKey]}}
+                              </td>
+                            </template>
+                          </tr>
+                        </template>
+                        <tr *ngIf="mf.data.length == 0">
+                          <td [attr.colspan]="mf.data.length" style="font-size: 0.9rem;">No hay información...</td>
+                        </tr>
+                        </tbody>
+                        <tfoot *ngIf="arrayInfoOfertas.length > 5">
+                        <tr>
+                          <td [attr.colspan]="arrayCols.length + 1">
+                            <mfBootstrapPaginator [rowsOnPageSet]="[5, 10]"></mfBootstrapPaginator>
+                          </td>
+                        </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- fin de row tabla dinamica -->
+
+      <!--  <div class="row">
+
+          <div *ngIf="showCombos" class="col-lg-3 col-xs-12">
+          </div>
+          <div [class.col-lg-9]="showCombos" [class.col-lg-12]="!showCombos" style="border-left : 1px solid #e5e5e5;">
+            <label>Alta/Edición de Oferta</label>
+          </div>
+        </div> --<
+
+
+        <!-- row de formulario -->
+      <!--  <div class="row">
+
+          <div *ngIf="showCombos" class="col-lg-3 col-xs-12">
+          </div>
+
+          <div [class.col-lg-9]="showCombos" [class.col-lg-12]="!showCombos" style="border-left : 1px solid #e5e5e5;">
+
+          </div>
+        </div>
+        <!-- fin row formulario -->
+
+
+        <!-- row de botonera -->
+        <div class="row">
+
+          <div *ngIf="showCombos" class="col-lg-3 col-xs-12">
+          </div>
+
+          <div [class.col-lg-9]="showCombos" [class.col-lg-12]="!showCombos" style="border-left : 1px solid #e5e5e5;">
+            <div class="form-horizontal" role="form">
+              <fieldset>
+                <div class="form-group row justify-content-between">
+
+                  <!-- campo de import -->
+                  <div class="col-lg-6 text-center text-info">
+                    <div fileDrop class="drop-zone custom-drop-zone"
+                         [ngClass]="{'nv-file-over': fileIsOver, 'another-file-over-class' : fileOk}"
+                         [options]="options"
+                         (fileOver)="fileOver($event)"
+                         (onFileDrop)="onFileDropDemo($event)">
+                      {{uploader.queue[0] == null ? fileLoaderMsg : uploader.queue[0].file.name}}
+                    </div>
+                  </div>
+
+                  <!-- botones (a la derecha)-->
+                  <div class="col-lg-6">
+
+                    <button style="margin-left: 5px"
+                            class="btn small-button btn-danger my-btn-danger static-btn pull-right"
+                            id="return-btn"
+                            (click)="this[getButtonAction('return-btn', this.actionsMap)]()">
+                      Regresar &nbsp; <i class="fa fa-rotate-left"></i>
+                    </button>
+
+                   <!-- <button style="margin-left: 5px"
+                            class="btn small-button btn-warning my-btn-warning static-btn pull-right" role="button"
+                            (click)="cancel()">
+                      Cancelar &nbsp; <i class="glyphicon glyphicon-remove"></i>
+                    </button> -->
+
+                    <button style="margin-left: 5px"
+                            class="btn small-button btn-success my-btn-success static-btn pull-right"
+                            id="finish-btn"
+                            (click)="this[getButtonAction('finish-btn', this.actionsMap)]()">
+                      Terminar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-small btn-primary pull-right">
+                      Grabar &nbsp;
+                      <i class="fa fa-save fa-lg"></i>
+                    </button>
+                  </div>
+
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <!-- fin row botonera -->
+
+      </div>
+    </section>
+  </div>
+</div>

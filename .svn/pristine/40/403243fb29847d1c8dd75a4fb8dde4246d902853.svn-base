@@ -1,0 +1,430 @@
+<br>
+<section class="widget" widget>
+
+  <!-- *************** Modal para confirmar copia de Medios *********** -->
+  <modal title="Confirmar" #confirmCopy>
+    <modal-content>
+      <section class="widget" widget>
+        {{msjConfirm}}
+      </section>
+    </modal-content>
+    <modal-footer>
+      <div class="row">
+        <div id="btnModal">
+          <button type="button" class="btn small-button btn-success" (click)="confirmPasteFunction()">
+            <span class="fa fa-save fa-lg"></span>
+            Confirmar
+          </button>
+          <button type="button" class="btn small-button btn-danger" (click)="resetCopyFunction()">
+            <span class="fa fa-remove fa-lg"></span>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </modal-footer>
+  </modal>
+  <!-- ******************************************************** -->
+
+  <!-- *************** Modal para cancelar Actividad ********************* -->
+  <modal title="Confirmar" #cancelAct>
+    <modal-content>
+      <section class="widget" widget>
+        <strong>{{msjCancelarActividad}}</strong>
+      </section>
+    </modal-content>
+    <modal-footer>
+      <div class="row">
+        <div class="col-md-7"></div>
+        <div id="btnModal2">
+          <button type="button" class="btn small-button btn-danger" (click)="closeCancelModal()">
+            <span class="fa fa-remove fa-lg"></span>
+            Continuar
+          </button>
+          <button type="button" class="btn small-button btn-success" routerLinkActive="true"
+                  [routerLink]="['/app/inbox']">
+            <span class="fa fa-sign-out fa-lg"></span>
+            Regresar
+          </button>
+        </div>
+      </div>
+    </modal-footer>
+  </modal>
+  <!-- ******************************************************** -->
+
+  <div class="widget-body-container">
+    <div class="row">
+      <h2><strong>{{windowTitle}}</strong></h2>
+      <div class="col-xl-4 col-md-6 col-xs-10 offset-xl-4 offset-md-3 offset-xs-1">
+        <div id="msjView1" *ngIf="hasMsj" [@msjShow]="hasMsj" (click)="closeMsj()"
+             [class.alert-danger]="classMsjDanger" [class.alert-info]="classMsjInfo" class="alert ">
+          <div class="col-md-11" align="center">
+            <strong id="msjSystemText">{{mensajeAlert}}</strong>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isShow('espacios_view1_tableMedios')" id="espacios_view1_tableMedios" class="col-md-10">
+        <a *ngIf="copySelected == true" (click)="resetCopyFunction()">
+          <span class="alert alert-info"><i class="fa fa-undo"></i>&nbsp; Terminar Copiado</span>
+        </a>
+        <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+          <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+          <span class="input-group-addon">
+            <i class="fa fa-search"></i>
+          </span>
+            <input (keyup)="searchTableMedios($event)" class="form-control form-control-sm" id="table-search-input"
+                   type="text" placeholder="Buscar">
+          </div>
+        </div>
+        <table class="table table-bordered table-hover no-margin-bottom" [mfData]="aux" #mf="mfDataTable"
+               [mfRowsOnPage]="5" id="tableMedios">
+          <thead>
+          <tr>
+            <th width="60%">
+              <mfDefaultSorter by="descripcion">Nombre</mfDefaultSorter>
+            </th>
+            <th width="30%">Estatus</th>
+            <th width="10%"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let m of mf.data" [class.selectedRow]="m.selected">
+            <td (click)="selectMedio(m.mediosId, m.descripcion)" style="cursor: pointer">{{m.descripcion}}</td>
+            <td style="cursor: pointer">
+              <progress [tooltip]="(m.asignados / m.total) * 100+' %'" style="margin-top: 8px"
+                        class="progress progress-sm progress-success" [max]="m.total"
+                        [value]="m.asignados" width="75%"></progress>
+            </td>
+            <td>
+              <a (click)="prepareToCopy(m.mediosId)" *ngIf="copySelected == false" title="Copiar"><i
+                class="fa fa-copy fa-lg"></i></a>
+              <a (click)="pasteFunction(m.mediosId)" *ngIf="copySelected == true && sourceId != m.mediosId"
+                 title="Pegar"><i class="fa fa-paste fa-lg"></i></a>
+            </td>
+          </tr>
+          <tr *ngIf="aux.length == 0">
+            <td colspan="3">No hay registros que mostrar</td>
+          </tr>
+          </tbody>
+          <tfoot *ngIf="aux.length > 5">
+          <tr>
+            <td colspan="3">
+              <mfBootstrapPaginator [rowsOnPageSet]="[5, 10]"></mfBootstrapPaginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="col-md-2">
+        <section *ngIf="isShow('espacios_view1_indicador_totalEspacios')" id="espacios_view1_indicador_totalEspacios"
+                 class="widget" widget>
+          <header>
+            <h6>Total Espacios</h6>
+            <div class="widget-controls">
+              <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+              <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+              <!--  <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a> -->
+            </div>
+          </header>
+          <div class="widget-body clearfix">
+            <canvas baseChart
+                    [data]="totalChartData"
+                    [labels]="totalChartLabels"
+                    [chartType]="totalChartType"
+                    [colors]="colors"
+            ></canvas>
+            <!-- <div morris-chart [type]="'donut'" [height]="130" [options]="totalEspaciosChart"></div> -->
+          </div>
+        </section>
+        <section *ngIf="isShow('espacios_view1_indicador_totalEspaciosSelected')"
+                 id="espacios_view1_indicador_totalEspaciosSelected" class="widget" widget>
+          <header>
+            <h6>Medio Seleccionado</h6>
+            <div class="widget-controls">
+              <a data-widgster="expand" title="Abrir" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+              <a data-widgster="collapse" title="Cerrar" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+              <!--  <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a> -->
+            </div>
+          </header>
+          <div *ngIf="medioSelectedId > 0" class="widget-body clearfix">
+            <canvas baseChart
+                    [chartType]="totalChartType"
+                    [labels]="totalChartLabels"
+                    [data]="medioChartData"
+                    [colors]="colors"
+            ></canvas>
+            <!-- <div morris-chart [type]="'donut'" [height]="130" [options]="totalEspaciosSelected"></div> -->
+          </div>
+        </section>
+      </div>
+    </div>
+    <!-- <div class="row">
+       <div id="espacios_view1_linkOferta" class="col-md-12">
+         <a routerLinkActive="true" [routerLink]="['view2']">
+           <span class="fa fa-hand-o-right fa-lg"></span>
+           Oferta Publicacion
+         </a>
+       </div>
+     </div> -->
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4><strong>Espacios</strong></h4>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xl-4 col-md-6 col-xs-10 offset-xl-4 offset-md-3 offset-xs-1">
+          <div id="msjView2" *ngIf="hasMsj" [@msjShow]="hasMsj" (click)="closeMsj()"
+               [class.alert-danger]="classMsjDanger" [class.alert-info]="classMsjInfo" class="alert ">
+            <div class="col-md-11" align="center">
+              <strong id="msjSystemText2">{{mensajeAlert}}</strong>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label text-md-right" for="eventoNumber">Numero
+              {{etService.etiquetas.evento}}:</label>
+            <label id="eventoNumber" class="col-form-label">{{eventoData.eventosId}}</label>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label text-md-right" for="eventoName">Descripcion
+              {{etService.etiquetas.evento}}:</label>
+            <label id="eventoName" class="col-form-label"><strong>{{eventoData.nombre}}</strong></label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div *ngIf="isShow('espacios_view2_label_numeroMedio')" class="form-group"
+               id="espacios_view2_label_numeroMedio">
+            <label class="col-form-label text-md-right" for="medioNumber">Medio:</label>
+            <label id="medioNumber" class="col-form-label">{{medioSelectedId}}</label>
+          </div>
+          <div *ngIf="isShow('espacios_view2_label_nombreMedio')" class="form-group"
+               id="espacios_view2_label_nombreMedio">
+            <label class="col-form-label text-md-right" for="medioName">Descripcion:</label>
+            <label id="medioName" class="col-form-label"><strong>{{medioSelectedDesc}}</strong></label>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div *ngIf="isShow('espacios_view2_tableEspaciosCat')" class="col-md-6 col-xs-12">
+          <div  id="espacios_view2_tableEspaciosCat"
+               class="panel panel-default">
+            <div class="panel-heading">
+              Categorias
+            </div>
+            <div class="panel-body panelBodyCustom">
+             <!-- <div class="col-md-6 col-xs-12"> -->
+                <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+                  <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+                  <span class="input-group-addon">
+                    <i class="fa fa-search"></i>
+                  </span>
+                    <input (keyup)="searchTableCategorias($event)" class="form-control form-control-sm"
+                           id="table2-search-input" type="text" placeholder="Buscar">
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table [mfData]="auxMediosCategos" #mf="mfDataTable" [mfRowsOnPage]="5"
+                         class="table table-bordered table-hover no-margin-bottom" id="tableOfertas">
+                    <thead>
+                    <tr>
+                      <th>
+                        <mfDefaultSorter by="desCategoria">Categoria</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="desSubCategoria">SubCategoria</mfDefaultSorter>
+                      </th>
+                      <th>Espacios Asignados</th>
+                      <th>Espacios Asignar</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let x of mf.data" (click)="selectCategoria(x.subcategoriasId)" style="cursor: pointer"
+                        [class.selectedRow]="x.selected">
+                      <td>{{x.desCategoria}}</td>
+                      <td>{{x.desSubCategoria}}</td>
+                      <td>{{x.total - x.pendientes}}</td>
+                      <td>{{x.total}}</td>
+                    </tr>
+                    <tr *ngIf="auxMediosCategos.length == 0">
+                      <td colspan="4">No hay registros que mostrar</td>
+                    </tr>
+                    </tbody>
+                    <tfoot *ngIf="auxMediosCategos.length > 5">
+                    <tr>
+                      <td colspan="4">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5, 10]"></mfBootstrapPaginator>
+                      </td>
+                    </tr>
+                    </tfoot>
+                  </table>
+                </div>
+             <!-- </div> -->
+            </div>
+          </div>
+        </div>
+        <div *ngIf="isShow('espacios_view2_tableCatPrecios')" class="col-md-6 col-xs-12">
+          <div  id="espacios_view2_tableCatPrecios"
+               class="panel panel-default">
+            <div class="panel-heading">
+              Ofertas
+            </div>
+            <div class="panel-body panelBodyCustom">
+             <!-- <div class="col-md-6 col-xs-12"> -->
+                <div >
+                  <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+                    <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+                      <span class="input-group-addon">
+                        <i class="fa fa-search"></i>
+                      </span>
+                      <input (keyup)="searchTableCategos2($event)" class="form-control form-control-sm"
+                             id="table3-search-input" type="text" placeholder="Buscar">
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table [mfData]="auxEspaciosProd" #mf="mfDataTable" [mfRowsOnPage]="5"
+                           class="table table-bordered table-hover no-margin-bottom" id="tableDescOferta">
+                      <thead>
+                      <tr>
+                        <th>
+                          <input id="checkAll" (change)="selectAll()" [(ngModel)]="todoSelected" type="checkbox">
+                        </th>
+                        <th>Combo</th>
+                        <th>Componente</th>
+                        <th>
+                          <mfDefaultSorter by="producto">Descripcion</mfDefaultSorter>
+                        </th>
+                        <th>Precio</th>
+                        <th>Preciazo Club</th>
+                        <th>Cañonazo</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let x of mf.data" [class.selectedRow]="x.seleccionado">
+                        <td>
+                          <input (change)="selectOferta(x.mecanicasId, false)" [(ngModel)]="x.seleccionado" type="checkbox">
+                        </td>
+                        <td>{{x.combo}}</td>
+                        <td>{{x.componente}}</td>
+                        <td>{{x.producto}}</td>
+                        <td>
+                          <p class="text-xs-right">
+                            {{x.preciosOferta | number: '1.2-2'}}
+                          </p>
+                        </td>
+                        <td>
+                          <p class="text-xs-right">
+                            {{x.preciazoClub | number: '1.2-2'}}
+                          </p>
+                        </td>
+                        <td>
+                          <!-- <span *ngIf="x.canonazo == true" class="glyphicon glyphicon-ok"></span>
+                           <span *ngIf="x.canonazo == false" class="glyphicon glyphicon-remove"></span> -->
+                          <input type="checkbox">
+                        </td>
+                      </tr>
+                      <tr *ngIf="auxEspaciosProd.length == 0">
+                        <td colspan="7">No hay registros que mostrar</td>
+                      </tr>
+                      </tbody>
+                      <tfoot *ngIf="auxEspaciosProd.length > 5">
+                      <tr>
+                        <td colspan="7">
+                          <mfBootstrapPaginator [rowsOnPageSet]="[5, 10]"></mfBootstrapPaginator>
+                        </td>
+                      </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+             <!-- </div> -->
+            </div>
+          </div>
+        </div>
+
+
+        <div *ngIf="isShow('espacios_view2_tableProductosOferta')" id="espacios_view2_tableProductosOferta" class="col-md-6 col-xs-12">
+          <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+            <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+                    <span class="input-group-addon">
+                      <i class="fa fa-search"></i>
+                    </span>
+              <input class="form-control form-control-sm" id="table22-search-input" type="text"
+                     placeholder="Buscar">
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table [mfData]="auxMecanicasProductos" #mf="mfDataTable" [mfRowsOnPage]="5"
+                   class="table table-bordered table-hover no-margin-bottom" id="tableProductos">
+              <thead>
+              <tr>
+                <th>Combo</th>
+                <th>Componente</th>
+                <th>Cobertura</th>
+                <th>Descripcion</th>
+                <th>Precio Oferta</th>
+                <th>% Descuento</th>
+                <!--  <th>Tipo Medio</th>
+                  <th>Espacio Promocional</th> -->
+              </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div *ngIf="isShow('espacios_panel_tipoMedios') || isShow('espacios_panel_espacioPromocional')" class="col-md-6 col-xs-12">
+          <div *ngIf="isShow('espacios_panel_tipoMedios')" id="espacios_panel_tipoMedios" class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Tipo de Medios
+              </div>
+              <div class="panel-body">
+                <div *ngFor="let tm of tipoMediosCheckBox" class="abc-checkbox abc-checkbox-success">
+                  <input id="{{tm.id}}" type="checkbox">
+                  <label for="{{tm.id}}">{{tm.name}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="isShow('espacios_panel_espacioPromocional')" id="espacios_panel_espacioPromocional"
+               class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Espacio Promocional
+              </div>
+              <div class="panel-body">
+                <div *ngFor="let eu of espaciosUbicacines" class="abc-checkbox abc-checkbox-success">
+                  <input id="EU{{eu.espaciosUbicacionesId}}" type="checkbox">
+                  <label for="EU{{eu.espaciosUbicacionesId}}">{{eu.nombre}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8"></div>
+    <div class="col-md-4">
+      <button style="margin-left: 5px" (click)="cancelActividad()" type="button" class="btn btn-small btn-danger pull-right">
+        Regresar &nbsp;
+        <span class="fa fa-remove fa-lg"></span>
+      </button>
+      <button style="margin-left: 5px" (click)="terminarActividad()" [disabled]="finishBttnDisabled" type="button"
+              class="btn btn-small btn-success pull-right">
+        Terminar &nbsp;
+        <span class="glyphicon glyphicon-ok"></span>
+      </button>
+      <button style="margin-left: 5px" id="espacios_bttn_grabar" (click)="this[getButtonAction('espacios_bttn_grabar', this.actionsMap)]()"
+              [disabled]="toSave.length == 0" type="button" class="btn btn-small btn-primary pull-right">
+        Grabar &nbsp;
+        <span class="fa fa-save fa-lg"></span>
+      </button>
+    </div>
+  </div>
+</section>
+

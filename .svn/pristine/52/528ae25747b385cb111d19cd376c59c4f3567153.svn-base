@@ -1,0 +1,38 @@
+
+/**
+* Created by Jose Gonzalez
+* 15 / 01 / 2017
+*/
+
+export class OfertasModel {
+
+  public numeroCombo: number = 0;
+
+  public categoriaId: number = 0;
+  public categoria: string = '';
+
+  public subCategoriaId: number = 0;
+  public subCategoria: string = '';
+  
+  public claveProducto : string = '';
+
+  public codigoBarras : string = '';
+
+  public descripcion : string = '';
+  public marca : string = '';
+  public modelo : string = '';
+  public tamanio : string = '';
+
+  public cantidad : number = 0;
+  public precioVenta : number = 0;
+
+  public precioOferta : number = 0;
+  public porcentajeDescuento : number = 0;
+  public preciazoClub : number = 0;
+
+  public vigenciaPreciazo : string = '';
+
+  public esCanonazo : boolean = false;
+  public observaciones : string = '';
+
+}

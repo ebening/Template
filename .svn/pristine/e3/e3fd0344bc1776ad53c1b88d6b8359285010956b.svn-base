@@ -1,0 +1,299 @@
+/**
+ * Created by jdominguez on 2/1/17.
+ */
+
+
+import {Component, ChangeDetectorRef, ViewChild, style, animate, transition, trigger} from "@angular/core";
+import {EtiquetaService} from "../../service/etiquetas.service";
+import {UtilService} from "../../service/util.service";
+import {CatalogService} from "../../service/catalog.service";
+import {UdpMediosEspaciosService} from "../../service/sp/udpMediosEspacios.service";
+import {UdpMediosEspaciosSel} from "../../model/sp/UdpMediosEspaciosSel";
+import {MediosEspacios} from "../../model/sp/MediosEspacios";
+import {Modal} from "ng2-modal";
+import {Usuarios} from "../../model/Usuarios";
+import {Observable} from "rxjs";
+import {MensajeService} from "../../service/mensajes.service";
+import {Router, ActivatedRoute} from "@angular/router";
+import {Eventos} from "../../model/Eventos";
+import {StructureService} from "../../service/structure.service";
+
+
+@Component({
+  selector: 'view1',
+  templateUrl: './view1.html',
+  styleUrls: ['./view1.scss', './charts.style.scss'],
+  animations: [
+    trigger(
+      'msjShow', [
+        transition('void => *', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0)', opacity: 1}))
+        ]),
+        transition('* => void', [
+          style({transform: 'translateX(0)', 'opacity': 1}),
+          animate('500ms', style({transform: 'translateX(100%)', opacity: 0}))
+        ])
+      ]
+    )
+  ]
+})
+export class View1 {
+
+  // ********** Variables Flujo ********** //
+  private structureDataId: number = 0;
+  private versionNum: number = 0;
+  private eventoData: Eventos = new Eventos();
+
+  // ********* Variables Flujo Pantalla ********* //
+
+  private dataId: number = 0;
+  private dataContent: any = {};
+  private viewConfig: any = [];
+  private fieldsMap: any = {};
+
+  // ************** Mensajes ********** //
+  private hasMsj: boolean = false;
+  private mensajeAlert: string = '';
+  private classMsjInfo: boolean = false;
+  private classMsjDanger: boolean = true;
+
+  // ******************************* //
+  private medioSelectedId: number;
+  private medioSelectedDesc: string = '';
+
+  private totalEspaciosChart: any;
+  private totalEspaciosSelected: any;
+
+  // ********** Copy Variables ******* //
+  @ViewChild('confirmCopy') modal: Modal;
+  private copySelected: boolean = false;
+  private sourceId: number;
+  private targetId: number;
+  private msjConfirm: string;
+
+
+  // *************************** //
+
+  private udpMediosEspaciosSel: UdpMediosEspaciosSel = new UdpMediosEspaciosSel();
+  private aux: MediosEspacios[] = [];
+  private mediosCategorias: any[] = [];
+
+  // ********* MERZA ******** //
+  private tipoMedios: any[];
+  private tipoMediosCheckBox: any[] = [];
+  // ********************* //
+
+  @ViewChild('cancelAct') modalCancel: Modal;
+  private msjCancelarActividad: string;
+
+  constructor(private etService: EtiquetaService,
+              private util: UtilService,
+              private catalogService: CatalogService,
+              private mediosEspaciosService: UdpMediosEspaciosService,
+              private msjService: MensajeService,
+              private route: ActivatedRoute,
+              private structureService: StructureService) {}
+
+
+  ngOnInit() {
+    this.etService.updateEtiquetas();
+    this.structureDataId = this.route.snapshot.params['dataId'] || 0;
+    this.versionNum = this.route.snapshot.params['versionNum'] || 0;
+    this.loadEvento(this.structureDataId);
+    this.getView();
+
+    this.totalEspaciosChart = {
+      data: [
+        {label: 'Espacios', value: 100},
+        {label: 'Espacios Asignados', value: 50},
+      ],
+      colors: ['#3835F7', '#F8C0A2']
+    };
+
+    this.totalEspaciosSelected = {
+      data: [
+        {label: 'Total Espacios', value: 100},
+        {label: 'Espacios Asignados', value: 20},
+      ],
+      colors: ['#F7653F', '#F8C0A2']
+    };
+
+    this.initTipoMedios();
+  }
+
+  getView() {
+    this.structureService.getViewByAppId(1, 4).then(
+      data => {
+        this.dataContent = data;
+        this.viewConfig = this.dataContent.viewConfig || [];
+
+        //armado de mapa a partir de campos
+        var result = this.viewConfig.reduce(function (map, obj) {
+          map[obj.htmlId] = obj;
+          return map;
+        }, {});
+        //asignado a variable de instancia
+        this.fieldsMap = result;
+      }
+    );
+  }
+
+  /*Carga del evento*/
+  loadEvento(structureDataId: number) {
+    this.structureService.getEventoByStructureDataId(structureDataId).then(
+      data => {
+        this.eventoData = data;
+        this.loadMedios();
+      }
+    );
+  }
+
+  /*Carga Medios Tabla 1 */
+  loadMedios(){
+    this.mediosEspaciosService.selectMediosEspacios(this.eventoData.eventosId).subscribe(
+      data => {
+        this.udpMediosEspaciosSel = JSON.parse(JSON.parse(JSON.stringify(data))._body);
+      },
+      error => {
+        console.log(error);
+        if (!(error._body instanceof ProgressEvent)) {
+          let tm1: string[] = error._body.split(',');
+          let tm2: string[] = tm1[4].split(':');
+
+        }
+      }
+    );
+  }
+
+  initTipoMedios() {
+    this.catalogService.getTipoMedios().then(
+      data => {
+        this.tipoMedios = data;
+        for (var x: number = 0; x < this.tipoMedios.length; x++) {
+          this.tipoMediosCheckBox.push({
+            id: this.tipoMedios[x].tipoMediosId,
+            name: this.tipoMedios[x].name
+          });
+        }
+      }
+    );
+
+  }
+
+  selectMedio(medioId: number, medioDesc: string) {
+    this.medioSelectedId = medioId;
+    this.medioSelectedDesc = medioDesc;
+    this.mediosEspaciosService.selectEspaciosCategorias(this.eventoData.eventosId, medioId).subscribe(
+      data => {
+        this.mediosCategorias = JSON.parse(JSON.parse(JSON.stringify(data))._body);
+      },
+      error => {
+        console.log(error);
+        if (!(error._body instanceof ProgressEvent)) {
+          let tm1: string[] = error._body.split(',');
+          let tm2: string[] = tm1[4].split(':');
+          this.mensajeAlert = tm2[1].replace(/[\[\]"]+/g, '');
+          this.showMsj(this.mensajeAlert, 'danger', 3000);
+        }
+      }
+    );
+  }
+
+  searchTableMedios(searchStr: string) {
+
+  }
+
+  confirmPasteFunction() {
+    this.modal.close();
+  }
+
+  pasteFunction(target: number) {
+    this.targetId = target;
+    let userLogged: Usuarios = this.util.getUsuarioLogged();
+    let modelToSend = {
+      sourceId: this.sourceId,
+      targetId: this.targetId,
+      userId: userLogged.usuariosId
+    };
+    this.mediosEspaciosService.copyMecanicasVal(modelToSend).subscribe(
+      data => {
+        let response = JSON.parse(JSON.parse(JSON.stringify(data))._body);
+        if (response.sourceNumber == 0) {
+          this.showMsj("Medio Origen no tiene espacios asignados", 'danger', 3000);
+        } else {
+          this.msjConfirm = 'Esta seguro de pasar la informacion, lo que existe en Medio Destino se perderá';
+          this.modal.open();
+        }
+      },
+      error => {
+        console.log(error);
+        if (!(error._body instanceof ProgressEvent)) {
+          let tm1: string[] = error._body.split(',');
+          let tm2: string[] = tm1[4].split(':');
+          this.showMsj(tm2[1].replace(/[\[\]"]+/g, ''), 'danger', 3000);
+        }
+      }
+    );
+  }
+
+  resetCopyFunction() {
+    this.copySelected = false;
+    this.sourceId = 0;
+    this.targetId = 0;
+  }
+
+  prepareToCopy(source: number) {
+    this.copySelected = true;
+    this.sourceId = source;
+  }
+
+  cancelActividad() {
+    this.msjService.getMsjByKey('msj.espacios.cancelar').subscribe(
+      data => {
+        this.msjCancelarActividad = JSON.parse(JSON.stringify(data))._body;
+        this.modalCancel.open();
+      },
+      error => {
+
+      }
+    );
+  }
+
+  closeCancelModal() {
+    this.modalCancel.close();
+  }
+
+  showMsj(msj: string, msjClass: string, ms: number) {
+    this.hasMsj = true;
+    this.mensajeAlert = msj;
+    this.setClassAlert(msjClass);
+    let timer = Observable.timer(ms);
+    timer.subscribe(x => this.closeMsj());
+  }
+
+  setClassAlert(msjClass: string) {
+    this.classMsjDanger = false;
+    this.classMsjInfo = false;
+    switch (msjClass) {
+      case 'danger':
+        this.classMsjDanger = true;
+        break;
+      case 'info':
+        this.classMsjInfo = true;
+        break;
+    }
+  }
+
+  closeMsj() {
+    this.hasMsj = false;
+  }
+
+  isShow(variable: string): boolean {
+    if (this.fieldsMap.hasOwnProperty(variable)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}

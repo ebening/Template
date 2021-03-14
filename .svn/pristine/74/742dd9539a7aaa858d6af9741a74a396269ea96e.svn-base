@@ -1,0 +1,143 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2><strong>Información de Oferta</strong></h2>
+  </div>
+  <section style="width: 100%" class="widget" widget>
+    <div class="col-md-12 col-xs-12">
+      <h4>Información del Evento</h4>
+    </div>
+    <hr>
+    <div class="col-md-12 text-center text-xs-center col-xs-12">
+      <label>No. Evento: <strong>56</strong></label>
+      <label style="margin-left: 10px">Nombre Evento: <strong>Festival Febrero</strong></label>
+    </div>
+  </section>
+</div>
+<div class="row">
+  <section style="width: 100%" class="widget" widget>
+
+    <!-- *************** Modal para visualizar columnas ********************* -->
+    <modal title="Visualizar Columnas" #showColumnsModal>
+      <modal-content>
+        <section class="widget" widget>
+          <div class="panel panel-default">
+            <div style="height: 400px; overflow: auto" class="panel-body">
+              <div *ngFor="let col of dataDemo.columnas" class="abc-checkbox abc-checkbox-success">
+                <input [(ngModel)]="col.show" id="COL{{col.key}}" type="checkbox">
+                <label for="COL{{col.key}}">{{col.label}}</label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </modal-content>
+      <modal-footer>
+        <div class="row">
+          <div class="col-md-7"></div>
+          <div id="btnModal2">
+            <button type="button" class="btn small-button btn-primary" (click)="initSmartColumns(true)">
+              <span class="fa fa-save fa-lg"></span>
+              Grabar
+            </button>
+            <button type="button" class="btn small-button btn-danger" (click)="closeColumnHiddenModal()" >
+              <span class="fa fa-remove fa-lg"></span>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </modal-footer>
+    </modal>
+    <!-- ******************************************************** -->
+
+
+
+    <section class="widget col-md-4" widget>
+      <header>
+        <h6>Combos</h6>
+        <div class="widget-controls">
+          <a data-widgster="expand" title="Abrir" href="#">Expandir&nbsp;<i class="glyphicon glyphicon-chevron-up"></i></a>
+          <a data-widgster="collapse" title="Cerrar" href="#">Contraer&nbsp;<i class="glyphicon glyphicon-chevron-down"></i></a>
+          <!--  <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a> -->
+        </div>
+      </header>
+      <div class="widget-body clearfix collapse">
+        <ng2-smart-table id="tableCombo" [source]="dataDemo.comboTableData"
+                         (deleteConfirm)="confirmDelete($event)"
+                         [settings]="settingsTableCombo">
+
+        </ng2-smart-table>
+      </div>
+    </section>
+    <hr>
+    <div class="col-md-12">
+      <!--  <div style="margin-bottom: 5px" class="width-200 float-xs-right">
+          <div class="input-group input-group-sm input-group-transparent input-group-rounded">
+            <span class="input-group-addon">
+              <i class="fa fa-search"></i>
+            </span>
+            <input class="form-control form-control-sm" id="table-search-input" type="text" placeholder="Buscar">
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover no-margin-bottom" id="tableOfertas">
+            <thead>
+            <tr>
+              <th *ngFor="let x of dataDemo.columnas">
+                {{x.label}}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td [attr.colspan]="dataDemo.columnas.length" >No  hay registros que mostrar</td>
+            </tr>
+            </tbody>
+          </table>
+        </div> -->
+      <div style="margin-bottom: 5px" class="width-50 float-xs-right">
+        <button (click)="showColumnHiddenModal()" type="button" class="btn btn-default">
+          <span class="fa fa-list fa-lg"></span>
+        </button>
+      </div>
+      <div style="width: 100%; overflow: auto">
+        <div [style.width]="widthdivTable">
+          <ng2-smart-table id="tableDemo" style="overflow: auto" [source]="sourceTableOfertas"
+                           [settings]="settingsTable"
+                           (deleteConfirm)="confirmDelete($event)"
+          ></ng2-smart-table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 text-primary">
+        <div fileDrop class="drop-zone"
+             [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
+             [options]="options"
+             (fileOver)="fileOver($event)"
+             (onFileDrop)="onFileDrop($event)">
+          Importar desde Excel
+        </div>
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-5 pull-right">
+        <button style="margin-left: 100px" type="button" class="btn btn-small btn-primary">
+          Grabar
+          <i class="fa fa-save fa-lg"></i>
+        </button>
+        <button type="button" class="btn btn-small btn-danger">
+          Borrar
+          <i class="fa fa-eraser fa-lg"></i>
+        </button>
+        <button type="button" class="btn btn-small btn-success">
+          Terminar
+          <i class="glyphicon glyphicon-ok"></i>
+        </button>
+        <button type="button" class="btn btn-small btn-info">
+          Cancelar
+          <i class="fa fa-remove fa-lg"></i>
+        </button>
+      </div>
+
+
+    </div>
+  </section>
+</div>

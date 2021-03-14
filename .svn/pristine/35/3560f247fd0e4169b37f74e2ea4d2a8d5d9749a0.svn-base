@@ -1,0 +1,102 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Usted esta Aqui</li>
+  <li class="breadcrumb-item active">Captura de Información de Ofertas</li>
+</ol>
+<h1 class="page-title"><span class="fw-semi-bold">Información de Ofertas</span></h1>
+
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget" widget>
+      
+      <div class="widget-body">
+
+        <!--
+        <h3>En construcción. Vuelva mas tarde...</h3>
+        -->
+
+        <!-- row de tabla dinamica -->
+        <div class="row">
+
+          
+          <div *ngIf="existsDynamicTable('ofertas-grid') > 0" class="table-responsive">
+            <table class="table table-bordered table-hover no-margin-bottom" style="overflow: scroll;" id="ofertas-grid" >
+              <thead>
+                <tr>
+                  <td *ngFor="let column of gridsMap['ofertas-grid'].gridConfig" 
+                    class="subject" style="font-size: 0.9rem; min-width: 100px!important;">{{column.label}}</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td [attr.colspan]="gridsMap['ofertas-grid'].gridConfig.length" style="font-size: 0.9rem;">No hay información...</td>
+                </tr>
+                <!--
+                <tr *ngIf="espaciosTable.content.length == 0">
+                  <td colspan="5" style="font-size: 0.9rem;">No hay información...</td>
+                </tr>
+                <tr *ngFor="let espacio of espaciosTable.content">
+                  <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.paginas.text}}</td>
+                  <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.espaciosId}}</td>
+                  <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.categorias.text}}</td>
+                  <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.subCategorias == undefined ? 'cargando...' : espacio.subCategorias.text}}</td>
+                  <td>
+                    <a (click)="borrarEspaciosDeGridDos(espacio)"><i class="glyphicon glyphicon-remove"></i></a>
+                  </td>
+                </tr>
+                -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+        <!-- fin de row tabla dinamica -->
+
+        <!-- row de botonera -->
+        <div class="row" style="margin-top:10px;">
+          <div class="col-lg-12 col-xs-12">
+            <div class="form-horizontal" role="form">
+              <fieldset>
+               <div class="form-group row justify-content-between">
+                  
+                  <!-- campo de import -->
+                  <div class="col-lg-6 text-center text-info">
+                        <div fileDrop class="drop-zone custom-drop-zone" 
+                          [ngClass]="{'nv-file-over': fileIsOver, 'another-file-over-class' : fileOk}"
+                          [options]="options"
+                          (fileOver)="fileOver($event)"
+                          (onFileDrop)="onFileDrop($event)">
+                          {{uploader.queue[0] == null ? fileLoaderMsg : uploader.queue[0].file.name}}
+                        </div>  
+                  </div> 
+                  
+                  <!-- botones (a la derecha)-->
+                  <div class="col-lg-6 right">              
+                    
+                    <button class="btn small-button btn-danger my-btn-danger static-btn" 
+                        id="return-btn"
+                        (click)="this[getButtonAction('return-btn', this.actionsMap)]()">
+                      Regresar &nbsp; <i class="fa fa-rotate-left"></i>
+                    </button>
+
+                    <button class="btn small-button btn-success my-btn-success static-btn" 
+                        id="finish-btn" 
+                        (click)="this[getButtonAction('finish-btn', this.actionsMap)]()">
+                      Terminar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+                  
+                    <button class="btn small-button btn-warning my-btn-warning static-btn" role="button" (click)="cancel()">
+                      Cancelar &nbsp; <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                  </div>
+
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <!-- fin row botonera -->
+
+      </div>
+    </section>
+  </div>
+</div>

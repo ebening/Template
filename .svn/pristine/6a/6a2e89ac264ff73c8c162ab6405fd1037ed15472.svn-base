@@ -1,0 +1,35 @@
+export const tableData: Array<any> = [
+  {'pagina': 'Portada',
+    'espacio': '1',
+    'area': 'Categoría 1',
+    'grupoArticulo': 'Subcategoría 1'},
+    {'pagina': 'Portada',
+    'espacio': '2',
+    'area': 'Categoría 1',
+    'grupoArticulo': 'Subcategoría 1'},
+    {'pagina': 'Portada',
+    'espacio': '3',
+    'area': 'Categoría 1',
+    'grupoArticulo': 'Subcategoría 1'},
+    {'pagina': 'Portada',
+    'espacio': '1',
+    'area': 'Categoría 1',
+    'grupoArticulo': 'Subcategoría 2'},
+    {'pagina': 'Portada',
+    'espacio': '1',
+    'area': 'Categoría 1',
+    'grupoArticulo': 'Subcategoría 2'},
+    {'pagina': 'Portada',
+    'espacio': '1',
+    'area': 'Categoría 1',
+    'grupoArticulo': 'Subcategoría 2'}
+];
+
+export const mediosData: Array<any> = [
+  {'medio': 'Medio Uno'},
+  {'medio': 'Medio dos'},
+  {'medio': 'Medio tres'},
+  {'medio': 'Medio cuatro'},
+  {'medio': 'Medio cinco'},
+  {'medio': 'Medio seis'},
+];

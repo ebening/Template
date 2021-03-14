@@ -1,0 +1,433 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Usted esta Aqui</li>
+  <li class="breadcrumb-item active">Captura de Información de Medios</li>
+</ol>
+<h1 class="page-title"><span class="fw-semi-bold">Información de Medios</span></h1>
+
+
+<!-- row de datos de evento -->
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget min-padding-bottom" widget style="margin-bottom:10px;">
+      <legend class="no-margin-bottom"><strong>Información del Evento</strong></legend>
+      <div class="form-horizontal" role="form">
+          <div class="row">
+            <div class="col-lg-3" ></div>
+            <div class="col-lg-9">
+
+              <div class="form-group row no-margin-bottom">
+                <label for="eventId" class="col-md-auto col-lg-auto col-form-label text-md-left container-padding-left">No. Evento:</label>
+                <div class="col-md-1 no-padding-rigth">
+                  <strong>
+                  <input type="text" id="eventId" class="form-control no-padding-left readonly-button"
+                    disabled [(ngModel)]="eventoData.eventosId">
+                  </strong>
+                </div>
+                <label for="eventName" class="col-md-auto col-lg-auto col-form-label text-md-left">Nombre Evento:</label>
+                <div class="col-md-7 col-lg-7">
+                  <input type="text" id="eventName" class="form-control no-padding-left readonly-button"
+                    disabled [(ngModel)]="eventoData.nombre">
+                </div>
+              </div>
+
+            </div>
+          </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <section class="widget" widget>
+
+      <header>
+        <!-- encabezado -->
+        <!--<h5>Wizard<small>Tunable widget</small></h5>-->
+        <!-- encabezado -->
+
+        <!-- controles del header -->
+        <div class="widget-controls">
+          <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+          <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+          <!--
+          <a data-widgster="close" title="Close" href="#"><i class="glyphicon glyphicon-remove"></i></a>
+          -->
+        </div>
+        <!-- controles del header -->
+      </header>
+
+      <div class="widget-body">
+
+
+        <!-- row de tabla de medios -->
+        <div class="row">
+
+          <!-- div de tabla -->
+          <div class="col-lg-3 col-xs-12">
+
+            <label for="eventSearch" class="col-form-label text-md-left">Buscar</label>
+            <input type="text"
+              (keyup)="searchMedios($event)"
+              class="form-control" name="eventSearch" id="eventSearch">
+
+            <div class="table-responsive">
+
+              <table class="table table-bordered table-hover no-margin-bottom" id="mediosTable" >
+                <thead>
+                  <tr>
+                    <th colspan="2">Listado de Medios</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="mediosTable.content.length == 0">
+                    <td colspan="2" style="font-size: 0.9rem;">No hay información...</td>
+                  </tr>
+                  <tr *ngFor="let medio of mediosTable.content" [ngClass]="{'border': medioSeleccionado == medio.mediosId }" >
+                    <td class="subject" style="width: 90%; font-size: 0.9rem;" (click)="onCellClick(medio, $event)">{{medio.descripcion}}</td>
+                    <td>
+                      <a [ngClass]="{'link': medioSeleccionado != medio.mediosId }" (click)="copyMedioToForm(medio)"><i class="fa fa-copy"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div *ngIf="mediosTable.needPagination() > 0" class="clearfix mb-xs">
+                <div class="float-xs-right" id="folder-stats">
+                  <ul class="pagination pagination-sm">
+
+                    <li [ngClass]="{'disabled': mediosTable.page == 0 }" class="prev page-item"><a class="page-link" (click)="moveMedioTableToPage(0)"><i class="fa fa-chevron-left"></i></a></li>
+
+                    <li *ngFor="let p of mediosTable.pagination" [ngClass]="{'active': mediosTable.page == p }" class="page-item"><a class="page-link" (click)="moveMedioTableToPage(p)">{{p+1}}</a></li>
+
+                    <li [ngClass]="{'disabled': (mediosTable.data.totalPages -1) == mediosTable.page }" class="next page-item"><a class="page-link" (click)="moveMedioTableToPage(mediosTable.data.totalPages -1)"><i class="fa fa-chevron-right"></i></a></li>
+
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+          </div><!-- fin div tabla-->
+
+          <!-- wizzard-->
+          <div class="col-lg-9 col-xs-12" style="border-left : 1px solid #e5e5e5;">
+            <!--
+            <h5>Inpage <strong>Wizard</strong></h5>
+            <p>An example of complete wizard form in widget.</p>
+            -->
+
+            <div bootstrap-wizard class="form-wizard">
+              <ul class="nav-justified mb-sm nav nav-pills">
+                <li class="nav-item"><a class="nav-link" href="#tab1" data-toggle="tab">
+                  <small>1.</small>
+                  Información General</a></li>
+                <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">
+                  <small>2.</small>
+                  Detalle</a></li>
+                <!--
+                <li class="nav-item"><a class="nav-link" href="#tab4" data-toggle="tab">
+                  <small>4.</small>
+                  Thank you!</a></li>
+                -->
+              </ul>
+
+              <div class="bg-gray-lighter progress-bar mt-xs">
+                <progress id="bar" class="progress progress-xs progress-bar-gray-light" value="100" max="100" style="width: 25%;"></progress>
+              </div>
+
+              <div class="tab-content">
+
+                <!-- tab 1 -->
+                <div class="tab-pane bg-gray-lighter" id="tab1">
+                  <form action='' method="POST" data-parsley-priority-enabled="false" novalidate="novalidate">
+                    <fieldset>
+
+
+                      <div class="form-group row">
+                        <label for="medioId" class="col-md-3 col-form-label text-md-right">No. Medio</label>
+                        <div class="col-md-2 ">
+                          <input type="text" id="medioId"
+                                 class="form-control readonly-button"
+                                 placeholder="" disabled
+                           [(ngModel)]="mediumModel.numeroHerramienta"
+                           [ngModelOptions]="{standalone: true}"
+                          >
+                        </div>
+                        <div class="col-md-8"></div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-right" for="tipoMedio">Tipo de Medio</label>
+                        <div class="col-md-9">
+                          <select2 id="tipoMedio"
+                            (valueChanged)="tipoMediosChangeEvent($event)"
+                            [data]="tipoMediosOptions" [options]="select2Options" [width]="250"></select2>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-right" for="zona">Zona</label>
+                        <div class="col-md-9">
+                          <select2 id="zona"
+                                  (valueChanged)="zonasChangeEvent($event)"
+                                  [data]="zonasOptions" [options]="select2Options" [width]="250"></select2>
+                                  <!--
+                                  <p *ngIf="selected" class="help-block mb-0">Selected value in select 2: <b>{{selected}}</b>.</p>
+                                  -->
+                        </div>
+                      </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label text-md-right" for="fechaInicial">
+                              Fecha Inicio
+                            </label>
+
+                            <div class="col-md-9">
+                              <datetime [(ngModel)]="mediumModel.fechaInicial"
+                                name="datetimeFF" id="fechaInicial" [timepicker]="false"
+                                [datepicker]="datepickerOpts"
+                                (dateChange)="initialDateChange()"
+                                ></datetime>
+                            </div>
+                      </div>
+
+                      <div class="form-group row">
+                            <label class="col-md-3 col-form-label text-md-right" for="fechaFinal">
+                              Fecha Fin
+                            </label>
+                            <div class="col-md-9">
+                              <datetime [(ngModel)]="mediumModel.fechaFinal"
+                                name="datetimeFI" id="fechaFinal" [timepicker]="false"
+                                [datepicker]="datepickerOpts"
+                                (dateChange)="finalDateChange()"
+                                ></datetime>
+                            </div>
+                      </div>
+
+
+                      <div class="form-group row">
+                        <label for="medioNombre" class="col-md-3 col-form-label text-md-right">Nombre</label>
+                        <div class="col-md-9">
+                          <input type="text" id="medioNombre" class="form-control" placeholder=""
+                          [(ngModel)]="mediumModel.nombreHerramienta"
+                          (keyup)="medioKeyUpEvent($event)"
+                          [ngModelOptions]="{standalone: true}"
+                          >
+                        </div>
+                      </div>
+
+                    </fieldset>
+                  </form>
+                </div>
+
+                <!-- tab 2 -->
+                <div class="tab-pane bg-gray-lighter" id="tab2">
+                  <form action='' method="POST" data-parsley-priority-enabled="false" novalidate="novalidate">
+                    <fieldset>
+
+                      <div class="form-group row">
+                        <label for="medioNombre" class="col-md-3 col-form-label text-md-right">Nombre</label>
+                        <div class="col-md-9">
+                          <input type="text" id="medioNombre" class="form-control readonly-button no-padding-left"
+                          disabled
+                           [(ngModel)]="mediumModel.nombreHerramienta"
+                          [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div>
+
+                      <!-- pagina -->
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-right" for="pagina">Página</label>
+                        <div class="col-md-9">
+                          <select2 id="pagina"
+                                  (valueChanged)="paginasChangeEvent($event)"
+                                  [data]="paginasOptions" [options]="select2Options"
+                                  [width]="250">
+                          </select2>
+
+                        </div>
+                      </div>
+
+                      <!-- espacios -->
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-right" for="espacio">Espacio</label>
+                        <div class="col-md-9">
+
+                          <select2 id="espacio"
+                                  (valueChanged)="espaciosChangeEvent($event)"
+                                  [data]="espaciosOptions" [options]="select2Options"
+                                  [width]="250">
+                          </select2>
+
+                        </div>
+                      </div>
+
+                      <!-- categorias -->
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-right" for="categorias">Categoría</label>
+                        <div class="col-md-9">
+
+                          <select2 id="categorias"
+                                  (valueChanged)="categoriasChangeEvent($event)"
+                                  [data]="categoriasOptions" [options]="select2Options"
+                                  [width]="250">
+                          </select2>
+
+                        </div>
+                      </div>
+
+                      <!-- subcategorias -->
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-right" for="subcategorias">Subcategoría</label>
+                        <div class="col-md-9">
+
+                          <select2 id="subCategorias"
+                                  (valueChanged)="subCategoriasChangeEvent($event)"
+                                  [data]="subCategoriasOptions" [options]="select2Options"
+                                  [width]="250">
+                          </select2>
+
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <div class="col-md-12">
+                          <div class="btn-group pull-right">
+                            <a class="link" (click)="agregarEspacio()">
+                              Agregar &nbsp;<i class="fa fa-plus"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </fieldset>
+
+                    <section class="widget" widget>
+                       <header>
+                          <h6><span class="fw-semi-bold">Detalle de espacios asignados</span></h6>
+
+                          <div class="widget-controls" style="padding-top: 10px!important;">
+                            <a class="btn link" (click)="limpiarEspacios()">
+                              Limpiar &nbsp; <i class="glyphicon glyphicon-trash"></i>
+                            </a>
+                            <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                            <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+                          </div>
+
+                        </header>
+                    <div class="widget-body">
+                      <div class="row">
+                      <!-- div de tabla -->
+                      <div class="col-lg-12 col-xs-12">
+
+                        <div class="table-responsive">
+
+                          <table class="table table-bordered table-hover no-margin-bottom" id="espaciosTable" >
+                            <thead>
+                              <tr>
+                                <th colspan="1" style="width: 23%">Página</th>
+                                <th colspan="1" style="width: 23%">Espacio</th>
+                                <th colspan="1" style="width: 23%">Categoría</th>
+                                <th colspan="1" style="width: 23%">SubCategoría</th>
+                                <th colspan="1" style="width: 8%"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngIf="espaciosTable.content.length == 0">
+                                <td colspan="5" style="font-size: 0.9rem;">No hay información...</td>
+                              </tr>
+                              <tr *ngFor="let espacio of espaciosTable.content">
+                                <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.paginas.text}}</td>
+                                <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.espaciosId}}</td>
+                                <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.categorias.text}}</td>
+                                <td class="subject" style="width: 23%; font-size: 0.9rem;">{{espacio.subCategorias == undefined ? 'cargando...' : espacio.subCategorias.text}}</td>
+                                <td>
+                                  <a (click)="borrarEspaciosDeGridDos(espacio)"><i class="glyphicon glyphicon-remove"></i></a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                          <div *ngIf="espaciosTable.needPagination() > 0" class="clearfix mb-xs">
+                            <div class="float-xs-right" id="folder-stats">
+                              <ul class="pagination pagination-sm">
+
+                                <li [ngClass]="{'disabled': espaciosTable.page == 0 }" class="prev page-item"><a class="page-link" (click)="moveEspaciosTableToPage(0)"><i class="fa fa-chevron-left"></i></a></li>
+
+                                <li *ngFor="let p of espaciosTable.pagination" [ngClass]="{'active': espaciosTable.page == p }" class="page-item"><a class="page-link" (click)="moveEspaciosTableToPage(p)">{{p+1}}</a></li>
+
+                                <li [ngClass]="{'disabled': (espaciosTable.data.totalPages -1) == espaciosTable.page }" class="next page-item"><a class="page-link" (click)="moveEspaciosTableToPage(espaciosTable.data.totalPages -1)"><i class="fa fa-chevron-right"></i></a></li>
+                              </ul>
+                            </div>
+                          </div>
+
+
+                        </div>
+
+                      </div><!-- fin div tabla-->
+
+                       </div>
+                    </div>
+                    </section>
+
+                  </form>
+                </div>
+
+                <ul class="pager wizard">
+                  <li class="previous">
+                    <a class="btn pull-left link">
+                      <i class="fa fa-caret-left"></i> &nbsp; Anterior
+                    </a>
+                  </li>
+                  <li class="next">
+                    <a class="btn pull-right link" >
+                      Siguiente &nbsp; <i class="fa fa-caret-right"></i></a>
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- fin de wizard-->
+
+        </div>
+        <!-- fin de row de tabla de medios -->
+
+        <!-- row de botonera -->
+        <div class="row" style="margin-top:10px;">
+          <div class="col-lg-12 col-xs-12">
+            <div class="form-horizontal" role="form">
+              <fieldset>
+               <div class="form-group row justify-content-between">
+                  <div class="col-lg-6"></div>
+
+                  <div class="col-lg-6 right">
+
+                    <button class="btn small-button btn-primary my-btn-primary static-btn" role="button" (click)="saveMedios()">
+                      Grabar &nbsp; <i class="glyphicon glyphicon-floppy-save"></i>
+                    </button>
+
+                    <button class="btn small-button btn-danger my-btn-danger static-btn" role="button" (click)="delete()">
+                      Borrar &nbsp; <i class="fa fa-eraser"></i>
+                    </button>
+
+                    <button class="btn small-button btn-success my-btn-success static-btn" role="button" (click)="finalizarCaptura()">
+                      Terminar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+
+                    <button class="btn small-button btn-warning my-btn-warning static-btn" role="button" (click)="cancel()">
+                      Cancelar &nbsp; <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                  </div>
+
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <!-- fin row botonera -->
+
+      </div>
+    </section>
+  </div>
+</div>

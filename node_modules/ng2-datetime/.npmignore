@@ -1,0 +1,13 @@
+.idea
+node_modules/
+config/
+dist/
+src/*
+!src/ng2-datetime/
+!src/vendor/
+
+index.html
+karma.conf.js
+tsconfig.json
+webpack.config.js
+yarn.lock

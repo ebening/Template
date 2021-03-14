@@ -1,0 +1,132 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2><strong>Información de Oferta</strong></h2>
+  </div>
+  <section style="width: 100%" class="widget" widget>
+    <div class="col-md-12 col-xs-12">
+      <h4>Información del Evento</h4>
+    </div>
+    <hr>
+    <div class="col-md-12 text-center text-xs-center col-xs-12">
+      <label>No. Evento: <strong>56</strong></label>
+      <label style="margin-left: 10px">Nombre Evento: <strong>Festival Febrero</strong></label>
+    </div>
+  </section>
+</div>
+
+
+<div class="row">
+  <div class="col-md-4">
+    <input type="text" class="form-control input-lg" placeholder="Buscar">
+    <table class="table">
+      <thead><tr><th>Listado de Medios</th></tr></thead>
+      <tbody>
+      <tr>
+        <td>Tabloide 1</td>
+        <td>
+          <div class="row progress-stats">
+            <div class="col-md-9 col-xs-12">
+              <h6 class="name m-t-1"></h6>
+              <p class="description deemphasize"></p>
+              <div class="bg-white progress-bar">
+                <progress progress-animate class="progress progress-primary progress-sm" value="100" max="100" style="width: 60%;" data-width="60%"></progress>
+              </div>
+            </div>
+            <div class="col-md-3 col-xs-12 text-xs-center">
+                                <span class="status rounded rounded-lg bg-body-light">
+                                    <small><span number-animate>75</span>%</small>
+                                </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Tabloide 2</td>
+        <td>
+          <div class="row progress-stats">
+            <div class="col-md-9 col-xs-12">
+              <h6 class="name m-t-1"></h6>
+              <p class="description deemphasize"></p>
+              <div class="bg-white progress-bar">
+                <progress progress-animate class="progress progress-danger progress-sm" value="100" max="100" style="width: 39%;" data-width="39%"></progress>
+              </div>
+            </div>
+            <div class="col-md-3 col-xs-12 text-xs-center">
+                                <span class="status rounded rounded-lg bg-body-light">
+                                    <small><span number-animate>84</span>%</small>
+                                </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="col-md-4">
+    <div class="row">
+      <div class="col-md-6"><p class="text-right pull-right">Paginas</p></div>
+      <div class="col-md-6">
+        <select class="form-control"><option>One</option><option>Two</option><option>Three</option></select>
+        <div class="btn-group btn-group-vertical pull-right">
+          <button class="btn btn-default ">Asignar +</button>
+          <button class="btn btn-default">Desasignar -</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-9 col-xs-12" style="border-left : 1px solid #e5e5e5;">
+    <div bootstrap-wizard class="form-wizard">
+
+      <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+      <ul class="pager wizard">
+        <li class="previous">
+          <a class="btn pull-left link">
+            <i class="fa fa-caret-left"></i> &nbsp; Anterior
+          </a>
+        </li>
+        <li class="next">
+          <a class="btn pull-right link" >
+            Siguiente &nbsp; <i class="fa fa-caret-right"></i></a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- row de botonera -->
+<div class="row">
+
+  <div class="col-lg-12 col-xs-12">
+          <!-- botones (a la derecha)-->
+          <div class=" pull-right">
+
+            <button class="btn small-button btn-primary my-btn-primary static-btn" role="button" (click)="saveMedios()">
+              Grabar &nbsp; <i class="glyphicon glyphicon-floppy-save"></i>
+            </button>
+
+            <button class="btn small-button btn-danger my-btn-danger static-btn" role="button" (click)="delete()">
+              Borrar &nbsp; <i class="fa fa-eraser"></i>
+            </button>
+
+            <button class="btn small-button btn-success my-btn-success static-btn" role="button" (click)="finalizarCaptura()">
+              Terminar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+            </button>
+
+            <button class="btn small-button btn-warning my-btn-warning static-btn" role="button" (click)="cancel()">
+              Cancelar &nbsp; <i class="glyphicon glyphicon-remove"></i>
+            </button>
+          </div>
+  </div>
+</div>
+<!-- fin row botonera -->
+
+
